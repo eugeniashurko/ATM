@@ -15,6 +15,7 @@ public:
     explicit MenuWidget(QWidget *parent = 0);
     ~MenuWidget();
 
+
 private:
     Ui::MenuWidget *ui;
 };

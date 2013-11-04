@@ -6,7 +6,8 @@
 
 #include "startwidget.h"
 #include "authwidget.h"
-
+#include "menuwidget.h"
+#include "farewellwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,15 +20,27 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void setStart() { current = start; }
-    void setAuth() { current = auth; }
 
+private slots:
+//    void on_exitButton_clicked();
+
+
+public slots:
+//    void performExit();
+//    void performAuth();
+//    void performInput();
+//    void performAuth();
+//    void performMenu();
 
 private:
     Ui::MainWindow * ui;
-    StartWidget * start;
-    AuthWidget * auth;
-    QWidget * current;
+//    StartWidget * start;
+//    AuthWidget * auth;
+//    MenuWidget * menu;
+//    FarewellWidget * farewell;
+
+//    void createActions();
+//    QWidget * current;
 };
 
 #endif // MAINWINDOW_H

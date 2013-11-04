@@ -13,6 +13,8 @@ StartWidget::~StartWidget()
     delete ui;
 }
 
-void StartWidget::on_InsertCardButton_pressed()
+void StartWidget::on_InsertCardButton_clicked()
 {
+   emit authCalled();
 }
+
