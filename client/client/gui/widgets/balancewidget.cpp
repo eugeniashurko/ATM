@@ -7,6 +7,11 @@ BalanceWidget::BalanceWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->quickWithdrawalButton, SIGNAL(clicked()), this, SLOT(on_withdrawButton_clicked()));
+    // ! Here we get balance from db !
+    int b = 10000;
+    QString balance(QString::number(b));
+    ui->sumOnBalanceLabel->setText(balance);
+
 }
 
 BalanceWidget::~BalanceWidget()

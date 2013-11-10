@@ -30,8 +30,10 @@ private slots:
     void on_balancePerformed();
     void on_withdrawPerformed();
     void on_periodicTrPerformed();
-
+    void on_sumProvided(int);
     void on_toMainMenuButton_clicked();
+
+    void customSumInput();
 
 private:
     void switchWidgetTo(QWidget* w);

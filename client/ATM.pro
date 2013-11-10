@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     client/gui/widgets/periodic_tr_subwidgets/step4.cpp \
     client/gui/widgets/periodic_tr_subwidgets/summary.cpp \
     client/gui/dialogues/authdialogue.cpp \
-    client/gui/dialogues/withdrawalreceipt.cpp
+    client/gui/dialogues/withdrawalreceipt.cpp \
+    client/gui/widgets/customsuminput.cpp \
+    client/gui/widgets/withdrawresultok.cpp
 
 HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/startwidget.h \
@@ -48,7 +50,9 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/periodic_tr_subwidgets/step4.h \
     client/gui/widgets/periodic_tr_subwidgets/summary.h \
     client/gui/dialogues/authdialogue.h \
-    client/gui/dialogues/withdrawalreceipt.h
+    client/gui/dialogues/withdrawalreceipt.h \
+    client/gui/widgets/customsuminput.h \
+    client/gui/widgets/withdrawresultok.h
 
 FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/startwidget.ui \
@@ -64,4 +68,7 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/periodic_tr_subwidgets/step4.ui \
     client/gui/widgets/periodic_tr_subwidgets/summary.ui \
     client/gui/dialogues/authdialogue.ui \
-    client/gui/dialogues/withdrawalreceipt.ui
+    client/gui/dialogues/withdrawalreceipt.ui \
+    client/gui/widgets/step.ui \
+    client/gui/widgets/customsuminput.ui \
+    client/gui/widgets/withdrawresultok.ui

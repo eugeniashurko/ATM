@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>267</width>
-    <height>118</height>
+    <width>393</width>
+    <height>276</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QLabel" name="balanceMessage">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
+     <x>60</x>
+     <y>10</y>
      <width>261</width>
      <height>41</height>
     </rect>
@@ -32,27 +32,33 @@
   <widget class="QLabel" name="sumOnBalanceLabel">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>40</y>
-     <width>57</width>
-     <height>15</height>
+     <x>36</x>
+     <y>50</y>
+     <width>151</width>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#sumOnBalanceLabel { font-size: 20pt; }</string>
    </property>
    <property name="text">
     <string>SUM</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="currencyLabel">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>40</y>
-     <width>57</width>
-     <height>15</height>
+     <x>210</x>
+     <y>50</y>
+     <width>121</width>
+     <height>61</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#currencyLabel { font-size: 20pt; }</string>
    </property>
    <property name="text">
     <string>UAH</string>
@@ -61,10 +67,10 @@
   <widget class="QPushButton" name="quickWithdrawalButton">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>70</y>
-     <width>161</width>
-     <height>31</height>
+     <x>110</x>
+     <y>150</y>
+     <width>181</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
