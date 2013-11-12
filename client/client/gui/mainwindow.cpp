@@ -1,9 +1,11 @@
 #include <QThread>
 #include <QAction>
 #include <QDebug>
+#include <iostream>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include "widgets/startwidget.h"
 #include "widgets/authwidget.h"
 #include "widgets/menuwidget.h"
@@ -13,9 +15,11 @@
 #include "widgets/periodic_tr_subwidgets/step3.h"
 #include "widgets/customsuminput.h"
 #include "widgets/withdrawresultok.h"
+#include "widgets/transfer.h"
+#include "widgets/supportwidget.h"
 
 #include "dialogues/farewelldialogue.h"
-#include <iostream>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     current_widget(0)
 {
     ui->setupUi(this);
+    this->setWindowTitle("ATM");
     initialize();
     return;
 }
@@ -54,6 +59,8 @@ void MainWindow::callMenu() {
     connect(w, SIGNAL(balanceCalled()), this, SLOT(on_balancePerformed()));
     connect(w, SIGNAL(withdrawCalled()), this, SLOT(on_withdrawPerformed()));
     connect(w, SIGNAL(periodicTrCalled()), this, SLOT(on_periodicTrPerformed()));
+    connect(w, SIGNAL(transferCalled()), this, SLOT(on_transferPerformed()));
+    connect(w, SIGNAL(supportCalled()), this, SLOT(on_supportPerformed()));
     switchWidgetTo(w);
 }
 
@@ -61,6 +68,8 @@ void MainWindow::callMenu() {
 void MainWindow::on_exitButton_clicked()
 {
     FarewellDialogue * d = new FarewellDialogue;
+    d->setWindowTitle("Reminder");
+    d->setModal(true);
     d->show();
     initialize();
 }
@@ -122,7 +131,18 @@ void MainWindow::on_sumProvided(int sum) {
     // ! Balance sufficiency validation here !
     WithdrawResultOk * w = new WithdrawResultOk;
     connect(w, SIGNAL(backToSumInput()), this, SLOT(on_withdrawPerformed()));
+    connect(w, SIGNAL(withdrawalCompleted()), this, SLOT(callMenu()));
     w->setSum(sum);
     switchWidgetTo(w);
     qDebug() << sum;
+}
+
+void MainWindow::on_transferPerformed() {
+    Transfer * w = new Transfer;
+    switchWidgetTo(w);
+}
+
+void MainWindow::on_supportPerformed() {
+    SupportWidget * w = new SupportWidget;
+    switchWidgetTo(w);
 }

@@ -19,31 +19,26 @@ WithdrawWidget::~WithdrawWidget()
 
 void WithdrawWidget::on_sum20Button_clicked()
 {
-    qDebug() << 20;
     emit sum(20);
 }
 
 void WithdrawWidget::on_sum50Button_clicked()
 {
-    qDebug() << 50;
     emit sum(50);
 }
 
 void WithdrawWidget::on_sum100Button_clicked()
 {
-    qDebug() << 100;
     emit sum(100);
 }
 
 void WithdrawWidget::on_sum200Button_clicked()
 {
-     qDebug() << 200;
      emit sum(200);
 }
 
 void WithdrawWidget::on_sum500Button_clicked()
 {
-     qDebug() << 500;
      emit sum(500);
 }
 

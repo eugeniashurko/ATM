@@ -28,6 +28,9 @@ public:
     void setStartDate(QDate d);
     void setFrequency(Frequency f);
 
+    void removeStartDate();
+    void removeFrequency();
+
 private:
     Ui::Summary * ui;
 };

@@ -30,10 +30,13 @@ SOURCES += main.cpp\
     client/gui/widgets/periodic_tr_subwidgets/step3.cpp \
     client/gui/widgets/periodic_tr_subwidgets/step4.cpp \
     client/gui/widgets/periodic_tr_subwidgets/summary.cpp \
-    client/gui/dialogues/authdialogue.cpp \
     client/gui/dialogues/withdrawalreceipt.cpp \
     client/gui/widgets/customsuminput.cpp \
-    client/gui/widgets/withdrawresultok.cpp
+    client/gui/widgets/withdrawresultok.cpp \
+    client/gui/widgets/transfer.cpp \
+    client/gui/dialogues/periodictransferreceipt.cpp \
+    client/gui/dialogues/transferreceipt.cpp \
+    client/gui/widgets/supportwidget.cpp
 
 HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/startwidget.h \
@@ -49,10 +52,13 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/periodic_tr_subwidgets/step3.h \
     client/gui/widgets/periodic_tr_subwidgets/step4.h \
     client/gui/widgets/periodic_tr_subwidgets/summary.h \
-    client/gui/dialogues/authdialogue.h \
     client/gui/dialogues/withdrawalreceipt.h \
     client/gui/widgets/customsuminput.h \
-    client/gui/widgets/withdrawresultok.h
+    client/gui/widgets/withdrawresultok.h \
+    client/gui/widgets/transfer.h \
+    client/gui/dialogues/periodictransferreceipt.h \
+    client/gui/dialogues/transferreceipt.h \
+    client/gui/widgets/supportwidget.h
 
 FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/startwidget.ui \
@@ -67,8 +73,11 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/periodic_tr_subwidgets/step3.ui \
     client/gui/widgets/periodic_tr_subwidgets/step4.ui \
     client/gui/widgets/periodic_tr_subwidgets/summary.ui \
-    client/gui/dialogues/authdialogue.ui \
     client/gui/dialogues/withdrawalreceipt.ui \
     client/gui/widgets/step.ui \
     client/gui/widgets/customsuminput.ui \
-    client/gui/widgets/withdrawresultok.ui
+    client/gui/widgets/withdrawresultok.ui \
+    client/gui/widgets/transfer.ui \
+    client/gui/dialogues/periodictransferreceipt.ui \
+    client/gui/dialogues/transferreceipt.ui \
+    client/gui/widgets/supportwidget.ui

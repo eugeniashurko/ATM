@@ -13,6 +13,7 @@ class WithdrawResultOk : public QWidget
 
 signals:
     void backToSumInput();
+    void withdrawalCompleted();
 
 public:
     explicit WithdrawResultOk(QWidget *parent = 0);
@@ -22,6 +23,8 @@ public:
 
 private slots:
     void on_backButton_clicked();
+    void on_withdrawButton_clicked();
+    void on_actionCompleted();
 
 private:
     Ui::WithdrawResultOk *ui;

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Summary</class>
- <widget class="QWidget" name="Summary">
+ <class>PeriodicTransferReceipt</class>
+ <widget class="QDialog" name="PeriodicTransferReceipt">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>261</height>
+    <width>400</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
   <widget class="QWidget" name="formLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>50</y>
+     <x>80</x>
+     <y>130</y>
      <width>231</width>
      <height>161</height>
     </rect>
@@ -165,20 +165,75 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="label_11">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>10</y>
-     <width>321</width>
-     <height>41</height>
+     <x>90</x>
+     <y>40</y>
+     <width>221</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Please, confirm the information below!</string>
+    <string>You have just made a transfer:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="farewellOkButton">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>320</y>
+     <width>151</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>80</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Card Number:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="cardLabel">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>80</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;Card&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="dateLabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>171</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;Date&gt;</string>
    </property>
   </widget>
  </widget>

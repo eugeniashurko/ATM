@@ -56,3 +56,13 @@ void Summary::setFrequency(Frequency f) {
     }
 
 }
+
+void Summary::removeStartDate() {
+    ui->startDateConfLabel->close();
+    ui->startDateLabel->close();
+}
+
+void Summary::removeFrequency() {
+    ui->freqConfLabel->close();
+    ui->freqLabel->close();
+}

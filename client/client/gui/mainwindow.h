@@ -4,11 +4,6 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 
-//#include "widgets/startwidget.h"
-//#include "widgets/authwidget.h"
-//#include "widgets/menuwidget.h"
-//#include "widgets/farewellwidget.h"
-
 namespace Ui {
 class MainWindow;
 }
@@ -32,6 +27,8 @@ private slots:
     void on_periodicTrPerformed();
     void on_sumProvided(int);
     void on_toMainMenuButton_clicked();
+    void on_transferPerformed();
+    void on_supportPerformed();
 
     void customSumInput();
 

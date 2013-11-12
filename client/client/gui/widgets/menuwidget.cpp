@@ -9,6 +9,7 @@ MenuWidget::MenuWidget(QWidget *parent) :
     connect(ui->balanceButton, SIGNAL(clicked()), this, SLOT(on_balanceButton_clicked()) );
     connect(ui->withdrawButton, SIGNAL(clicked()), this, SLOT(on_withdrawButton_clicked()) );
     connect(ui->periodicTrButton, SIGNAL(clicked()), this, SLOT(on_periodicTrButton_clicked()) );
+    connect(ui->transferButton, SIGNAL(clicked()), this, SLOT(on_transferButton_clicked()) );
 
 }
 
@@ -29,3 +30,12 @@ void MenuWidget::on_periodicTrButton_clicked() {
     emit periodicTrCalled();
 }
 
+void MenuWidget::on_transferButton_clicked() {
+    emit transferCalled();
+}
+
+
+void MenuWidget::on_supportButton_clicked()
+{
+    emit supportCalled();
+}
