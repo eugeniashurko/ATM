@@ -108,6 +108,7 @@ void MainWindow::on_balancePerformed() {
 
 void MainWindow::on_periodicTrPerformed() {
     PeriodicTransfer *w = new PeriodicTransfer;
+    connect(w, SIGNAL(periodicTrCompleted()), this, SLOT(callMenu()));
     switchWidgetTo(w);
 }
 
@@ -139,6 +140,7 @@ void MainWindow::on_sumProvided(int sum) {
 
 void MainWindow::on_transferPerformed() {
     Transfer * w = new Transfer;
+    connect(w, SIGNAL(transferCompleted()), this, SLOT(callMenu()));
     switchWidgetTo(w);
 }
 

@@ -2,6 +2,9 @@
 #include <iostream>
 #include "periodictransfer.h"
 
+#include "../dialogues/transferreceipt.h"
+
+
 PeriodicTransfer::PeriodicTransfer(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PeriodicTransfer),
@@ -27,6 +30,7 @@ PeriodicTransfer::PeriodicTransfer(QWidget *parent) :
     connect(this, SIGNAL(changeStackedWidgetIndex(int)), stack, SLOT(setCurrentIndex(int)) );
     connect(stack, SIGNAL(currentChanged(int)), this, SLOT(initializeStep(int)));
     connect(this, SIGNAL(dataReceived(int)), this, SLOT(saveData(int)));
+    connect(this, SIGNAL(completeCalled()), this, SLOT(performComplete()));
     initializeStep(0);
 }
 
@@ -116,8 +120,12 @@ void PeriodicTransfer::initializeStep(int prev)
 
 void PeriodicTransfer::on_confirmButton_clicked()
 {
-    emit dataReceived(stack->currentIndex());
-    emit changeStackedWidgetIndex(stack->currentIndex()+1);
+    if (stack->currentIndex() < 4) {
+        emit dataReceived(stack->currentIndex());
+        emit changeStackedWidgetIndex(stack->currentIndex()+1);
+    } else {
+        emit completeCalled();
+    }
 }
 
 void PeriodicTransfer::on_backButton_clicked()
@@ -153,5 +161,22 @@ void PeriodicTransfer::saveData(int source) {
      default:
         break;
     }
+}
+
+void PeriodicTransfer::performComplete() {
+    TransferReceipt * d = new TransferReceipt;
+    connect(d, SIGNAL(periodicTransferComplete()), this, SLOT(on_actionCompleted()));
+    d->setWindowTitle("Periodic Transfer Receipt");
+    d->setName(this->rec_name);
+    d->setCard(this->rec_card);
+    d->setSum(this->sum);
+    d->setStartDate(this->start_date);
+    d->setFrequency(this->freq);
+    d->setModal(true);
+    d->show();
+ }
+
+void PeriodicTransfer::on_actionCompleted() {
+     emit periodicTrCompleted();
 }
 

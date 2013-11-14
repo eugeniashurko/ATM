@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     client/gui/widgets/menuwidget.cpp \
     client/gui/widgets/balancewidget.cpp \
     client/gui/widgets/withdrawwidget.cpp \
-    client/connectionmanager.cpp \
     client/gui/dialogues/farewelldialogue.cpp \
     client/gui/widgets/periodictransfer.cpp \
     client/gui/widgets/periodic_tr_subwidgets/step1.cpp \
@@ -34,9 +33,10 @@ SOURCES += main.cpp\
     client/gui/widgets/customsuminput.cpp \
     client/gui/widgets/withdrawresultok.cpp \
     client/gui/widgets/transfer.cpp \
-    client/gui/dialogues/periodictransferreceipt.cpp \
+    client/gui/widgets/supportwidget.cpp \
     client/gui/dialogues/transferreceipt.cpp \
-    client/gui/widgets/supportwidget.cpp
+    client/logic/ssl/connectionmanager.cpp \
+
 
 HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/startwidget.h \
@@ -44,7 +44,6 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/menuwidget.h \
     client/gui/widgets/balancewidget.h \
     client/gui/widgets/withdrawwidget.h \
-    client/connectionmanager.h \
     client/gui/dialogues/farewelldialogue.h \
     client/gui/widgets/periodictransfer.h \
     client/gui/widgets/periodic_tr_subwidgets/step1.h \
@@ -56,9 +55,11 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/customsuminput.h \
     client/gui/widgets/withdrawresultok.h \
     client/gui/widgets/transfer.h \
-    client/gui/dialogues/periodictransferreceipt.h \
+    client/gui/widgets/supportwidget.h \
+    client/gui/dialogues/transactionreceipt.h \
     client/gui/dialogues/transferreceipt.h \
-    client/gui/widgets/supportwidget.h
+    client/logic/ssl/connectionmanager.h \
+
 
 FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/startwidget.ui \
@@ -78,6 +79,5 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/customsuminput.ui \
     client/gui/widgets/withdrawresultok.ui \
     client/gui/widgets/transfer.ui \
-    client/gui/dialogues/periodictransferreceipt.ui \
-    client/gui/dialogues/transferreceipt.ui \
-    client/gui/widgets/supportwidget.ui
+    client/gui/widgets/supportwidget.ui \
+    client/gui/dialogues/transferreceipt.ui

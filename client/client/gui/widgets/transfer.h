@@ -26,6 +26,9 @@ signals:
     //void nameRecieved(QString);
     void sumReceived(int);
 
+    void completeCalled();
+    void transferCompleted();
+
 private slots:
     void on_confirmButton_clicked();
     void on_backButton_clicked();
@@ -36,6 +39,9 @@ private slots:
     void setSum(int s) { sum = s; }
 
     void saveData(int);
+
+    void performComplete();
+    void on_actionCompleted();
 
 public:
     explicit Transfer(QWidget *parent = 0);

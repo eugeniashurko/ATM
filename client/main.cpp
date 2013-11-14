@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    //ConnectionManager * m = new ConnectionManager();
-    //m->connect();
+    ConnectionManager * m = new ConnectionManager();
+
 
 
     return a.exec();

@@ -31,6 +31,9 @@ signals:
     void sumReceived(int);
     void startDateReceived(const QDate);
     void frequencyReceived(Frequency);
+    void completeCalled();
+    void periodicTrCompleted();
+
 
 private slots:
     void on_confirmButton_clicked();
@@ -44,6 +47,10 @@ private slots:
     void setFrequency(Frequency f) { freq = f; }
 
     void saveData(int);
+
+    void performComplete();
+    void on_actionCompleted();
+
 
 public:
     explicit PeriodicTransfer(QWidget *parent = 0);

@@ -1,6 +1,8 @@
 #include "transfer.h"
 #include "ui_transfer.h"
 
+#include "../dialogues/transferreceipt.h"
+
 Transfer::Transfer(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Transfer),
@@ -22,6 +24,7 @@ Transfer::Transfer(QWidget *parent) :
     connect(this, SIGNAL(changeStackedWidgetIndex(int)), stack, SLOT(setCurrentIndex(int)) );
     connect(stack, SIGNAL(currentChanged(int)), this, SLOT(initializeStep(int)));
     connect(this, SIGNAL(dataReceived(int)), this, SLOT(saveData(int)));
+    connect(this, SIGNAL(completeCalled()), this, SLOT(performComplete()));
     initializeStep(0);
 }
 
@@ -100,8 +103,12 @@ void Transfer::initializeStep(int prev)
 
 void Transfer::on_confirmButton_clicked()
 {
-    emit dataReceived(stack->currentIndex());
-    emit changeStackedWidgetIndex(stack->currentIndex()+1);
+    if (stack->currentIndex() < 3) {
+        emit dataReceived(stack->currentIndex());
+        emit changeStackedWidgetIndex(stack->currentIndex()+1);
+    } else {
+        emit completeCalled();
+    }
 }
 
 void Transfer::on_backButton_clicked()
@@ -130,4 +137,22 @@ void Transfer::saveData(int source) {
         break;
     }
 }
+
+void Transfer::performComplete() {
+    TransferReceipt * d = new TransferReceipt;
+    connect(d, SIGNAL(periodicTransferComplete()), this, SLOT(on_actionCompleted()));
+    d->setWindowTitle("Transfer Receipt");
+    d->setName(this->rec_name);
+    d->setCard(this->rec_card);
+    d->setSum(this->sum);
+    d->removeStartDate();
+    d->removeFrequency();
+    d->setModal(true);
+    d->show();
+ }
+
+void Transfer::on_actionCompleted() {
+     emit transferCompleted();
+}
+
 
