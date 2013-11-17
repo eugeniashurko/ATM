@@ -37,6 +37,7 @@ PeriodicTransfer::PeriodicTransfer(QWidget *parent) :
 PeriodicTransfer::~PeriodicTransfer()
 {
     delete ui;
+    delete stack;
 }
 
 

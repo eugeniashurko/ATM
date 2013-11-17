@@ -20,6 +20,7 @@ public:
     ~WithdrawResultOk();
     const int getSum() const { return _sum; }
     void setSum(const int sum);
+    void showError(const int code);
 
 private slots:
     void on_backButton_clicked();

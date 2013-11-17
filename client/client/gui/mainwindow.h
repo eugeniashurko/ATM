@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 
+#include "../logic/networking/session.h"
+#include "../logic/networking/connectionmanager.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -35,7 +38,10 @@ private slots:
 private:
     void switchWidgetTo(QWidget* w);
     Ui::MainWindow * ui;
-    QWidget *current_widget;
+    QWidget * current_widget;
+
+    Session * session;
+    ConnectionManager * connection;
 };
 
 #endif // MAINWINDOW_H

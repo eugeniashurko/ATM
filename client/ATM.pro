@@ -14,6 +14,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ATM
 TEMPLATE = app
 
+LIBS += -lqjson
 
 SOURCES += main.cpp\
     client/gui/mainwindow.cpp \
@@ -35,7 +36,8 @@ SOURCES += main.cpp\
     client/gui/widgets/transfer.cpp \
     client/gui/widgets/supportwidget.cpp \
     client/gui/dialogues/transferreceipt.cpp \
-    client/logic/ssl/connectionmanager.cpp \
+    client/logic/networking/connectionmanager.cpp \
+    client/logic/networking/session.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -58,7 +60,8 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/supportwidget.h \
     client/gui/dialogues/transactionreceipt.h \
     client/gui/dialogues/transferreceipt.h \
-    client/logic/ssl/connectionmanager.h \
+    client/logic/networking/connectionmanager.h \
+    client/logic/networking/session.h
 
 
 FORMS    += client/gui/mainwindow.ui \

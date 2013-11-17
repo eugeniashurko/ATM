@@ -31,6 +31,7 @@ Transfer::Transfer(QWidget *parent) :
 Transfer::~Transfer()
 {
     delete ui;
+    delete stack;
 }
 
 // ! PUT FUCKIN VALIDATION HERE SOMEHOW !

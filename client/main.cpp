@@ -1,8 +1,10 @@
 #include <QApplication>
+#include <QDebug>
+
 #include <iostream>
 
 #include "client/gui/mainwindow.h"
-#include "client/connectionmanager.h"
+#include "client/logic/networking/connectionmanager.h"
 //#include "server/account.h"
 
 int main(int argc, char *argv[])
@@ -30,7 +32,7 @@ int main(int argc, char *argv[])
 
     ConnectionManager * m = new ConnectionManager();
 
-
+//    qDebug() << m->balanceRequest("token");
 
     return a.exec();
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>338</width>
-    <height>300</height>
+    <width>719</width>
+    <height>433</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>40</x>
      <y>20</y>
      <width>291</width>
      <height>31</height>
@@ -32,8 +32,8 @@
   <widget class="QLabel" name="sumLabel">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>60</y>
+     <x>80</x>
+     <y>110</y>
      <width>241</width>
      <height>51</height>
     </rect>
@@ -57,7 +57,7 @@
   <widget class="QPushButton" name="withdrawButton">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>230</x>
      <y>200</y>
      <width>101</width>
      <height>41</height>
@@ -70,7 +70,7 @@
   <widget class="QPushButton" name="backButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>60</x>
      <y>200</y>
      <width>101</width>
      <height>41</height>
@@ -79,6 +79,102 @@
    <property name="text">
     <string>&lt; Back</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="error1Widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>50</y>
+     <width>301</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="errorLabel1">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>299</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#errorLabel1 { color: red; }</string>
+    </property>
+    <property name="text">
+     <string>Sum is not valid!</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="errorLabel2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>299</width>
+      <height>39</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#errorLabel2 { color: red; }</string>
+    </property>
+    <property name="text">
+     <string>Please go back and provide another sum.</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="error2Widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>60</y>
+     <width>301</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="error2Label1">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>299</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#error2Label1 { color: red; }</string>
+    </property>
+    <property name="text">
+     <string>Insufficient funds!</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="error2Label2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>299</width>
+      <height>39</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#error2Label2 { color: red; }</string>
+    </property>
+    <property name="text">
+     <string>Please go back and provide another sum.</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

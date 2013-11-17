@@ -17,6 +17,9 @@ signals:
 private slots:
     void on_authButton_clicked();
 
+public slots:
+    void showError();
+
 public:
     explicit AuthWidget(QWidget *parent = 0);
     ~AuthWidget();

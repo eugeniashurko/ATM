@@ -7,6 +7,8 @@ AuthWidget::AuthWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->authButton, SIGNAL(clicked()), this, SLOT(on_authButton_clicked()));
+    ui->errorLabel->setText("Authentication failed!");
+    ui->errorLabel->close();
 }
 
 AuthWidget::~AuthWidget()
@@ -16,6 +18,9 @@ AuthWidget::~AuthWidget()
 
 void AuthWidget::on_authButton_clicked()
 {
-    // Check input
     emit authCalled(ui->cadNumberInput->text(), ui->pinInput->text());
+}
+
+void AuthWidget::showError() {
+    ui->errorLabel->show();
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>668</width>
-    <height>529</height>
+    <width>671</width>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,6 +56,28 @@
     </property>
     <property name="text">
      <string>To Main Menu</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="errorLabel">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>629</width>
+      <height>459</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#errorLabel { 
+	color: red; 
+	font-size: 12pt;
+}</string>
+    </property>
+    <property name="text">
+     <string>Due to some connection problems ATM is currently not functioning!</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
