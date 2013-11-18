@@ -17,7 +17,7 @@ signals:
    void fromBalanceWithdrawCalled();
 
 public:
-    explicit BalanceWidget(QWidget *parent = 0);
+    explicit BalanceWidget(const int available, const int hold, QWidget *parent = 0);
     ~BalanceWidget();
 
 private:

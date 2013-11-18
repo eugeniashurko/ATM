@@ -10,6 +10,8 @@ class FarewellDialogue;
 class FarewellDialogue : public QDialog
 {
     Q_OBJECT
+signals:
+   void okClicked();
 
 public:
     explicit FarewellDialogue(QWidget *parent = 0);

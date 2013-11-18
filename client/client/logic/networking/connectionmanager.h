@@ -6,7 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-
+#include <list>
 
 class ConnectionManager : public QObject
 {
@@ -14,7 +14,7 @@ class ConnectionManager : public QObject
 
 public:
 
-    // Networking problems exceptions class
+    // Networking problems exceptions
     class BadConnection {
     private:
         QString msg;
@@ -31,20 +31,32 @@ public:
         ~TokenExpired() {}
     };
 
+    // Thrown in auth-request if account does not exist
+    class AuthFailed {
+    public:
+        AuthFailed() {}
+        ~AuthFailed() {}
+    };
+
     explicit ConnectionManager(QObject *parent = 0);
     ~ConnectionManager();
 
+    // Function for checking the connection
     bool checkConnection();
 
-    // Request methods:
+    // REQUEST METHODS:
 
-    // Returns token if successful
+    // Makes authentication request by card and pin
+    // - returns session token if successful
+    // - throws ConnectionManager::BadConnection exception in case of connection troubles
+    // - throws ConnectionManager::AuthFailed if account does not exist
     QString authRequest(QString card, QString PIN);
 
-    // Returns balance if successful
-    // Throws exception if not authorized
-    // Throws exception if network error
-    const int balanceRequest(QString token);
+    // Makes balance inquiry request
+    // - returns balance if successful
+    // - throws ConnectionManager::BadConnection exception in case of connection troubles
+    // - throws ConnectionManager::TokenExpired in case of time out
+    const std::list<int> balanceRequest(QString token);
 
 //    void withdrawalRequest(QString card, int sum);
 

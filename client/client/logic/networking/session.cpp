@@ -6,7 +6,7 @@ Session::Session(QString token, QString card, QObject *parent) :
     _card(card),
     QObject(parent)
 {
-    qDebug() << "Session started";
+    qDebug() << "Session started. Token: " << _token;
     return;
 }
 

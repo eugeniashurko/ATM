@@ -37,7 +37,10 @@ SOURCES += main.cpp\
     client/gui/widgets/supportwidget.cpp \
     client/gui/dialogues/transferreceipt.cpp \
     client/logic/networking/connectionmanager.cpp \
-    client/logic/networking/session.cpp
+    client/logic/networking/session.cpp \
+    client/gui/dialogues/servererror.cpp \
+    client/gui/widgets/servererrorwidget.cpp \
+    client/gui/widgets/pinremindwidget.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -61,7 +64,10 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/dialogues/transactionreceipt.h \
     client/gui/dialogues/transferreceipt.h \
     client/logic/networking/connectionmanager.h \
-    client/logic/networking/session.h
+    client/logic/networking/session.h \
+    client/gui/dialogues/servererror.h \
+    client/gui/widgets/servererrorwidget.h \
+    client/gui/widgets/pinremindwidget.h
 
 
 FORMS    += client/gui/mainwindow.ui \
@@ -83,4 +89,7 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/withdrawresultok.ui \
     client/gui/widgets/transfer.ui \
     client/gui/widgets/supportwidget.ui \
-    client/gui/dialogues/transferreceipt.ui
+    client/gui/dialogues/transferreceipt.ui \
+    client/gui/dialogues/servererror.ui \
+    client/gui/widgets/servererrorwidget.ui \
+    client/gui/widgets/pinremindwidget.ui

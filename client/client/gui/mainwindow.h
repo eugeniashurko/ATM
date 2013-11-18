@@ -6,6 +6,8 @@
 
 #include "../logic/networking/session.h"
 #include "../logic/networking/connectionmanager.h"
+#include "dialogues/servererror.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -19,9 +21,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void pinRemind();
+    const QString getPinAgain(bool after_error=false);
+
 private slots:
     void initialize();
     void callMenu();
+    void cleanError();
+    void invokeServerError();
     void on_exitButton_clicked();
     void on_authPerformed(QString, QString);
     void on_insertClick();
@@ -39,7 +46,7 @@ private:
     void switchWidgetTo(QWidget* w);
     Ui::MainWindow * ui;
     QWidget * current_widget;
-
+    ServerError * error;
     Session * session;
     ConnectionManager * connection;
 };

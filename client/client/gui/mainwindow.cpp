@@ -2,6 +2,7 @@
 #include <QAction>
 #include <QDebug>
 #include <iostream>
+#include <list>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -17,19 +18,20 @@
 #include "widgets/withdrawresultok.h"
 #include "widgets/transfer.h"
 #include "widgets/supportwidget.h"
-
+#include "widgets/servererrorwidget.h"
+#include "widgets/pinremindwidget.h"
 #include "dialogues/farewelldialogue.h"
-
+#include "dialogues/servererror.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     current_widget(0),
     session(0),
-    connection(new ConnectionManager)
+    connection(new ConnectionManager),
+    error(0)
 {
     ui->setupUi(this);
-    ui->errorLabel->close();
     this->setWindowTitle("ATM");
     initialize();
     return;
@@ -37,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if (error != 0) {
+        delete error;
+        error = 0;
+    }
+
     delete session;
     session = 0;
 
@@ -59,15 +66,17 @@ void MainWindow::initialize() {
         StartWidget* a = new StartWidget;
         connect(a, SIGNAL(authCalled()), this, SLOT(on_insertClick()));
         switchWidgetTo(a);
-        return;
     } else {
-       ui->errorLabel->show();
+       ServerErrorWidget * w = new ServerErrorWidget;
+       switchWidgetTo(w);
     }
+    return;
 }
 
 void MainWindow::switchWidgetTo(QWidget* w)
 {
-    delete current_widget;
+    if (current_widget != 0)
+        delete current_widget;
     current_widget = w;
     ui->widgetsVerticalLayout->addWidget(w);
     return;
@@ -85,18 +94,66 @@ void MainWindow::callMenu() {
     return;
 }
 
+void MainWindow::cleanError() {
+    if (error != 0) {
+        delete error;
+        error = 0;
+    }
+    return;
+}
+
+void MainWindow::invokeServerError() {
+    if (error == 0) {
+        error = new ServerError;
+        error->setModal(true);
+        error->setWindowTitle("Server Connection Error");
+        error->show();
+        connect(error, SIGNAL(exitCalled()), this, SLOT(on_exitButton_clicked()));
+        connect(error, SIGNAL(exitCalled()), this, SLOT(cleanError()));
+        connect(error, SIGNAL(backCalled()), this, SLOT(cleanError()));
+    }
+}
+
+const QString MainWindow::getPinAgain(bool after_error) {
+    PinRemindWidget * w = new PinRemindWidget;
+    switchWidgetTo(w);
+    QEventLoop loop;
+    connect(w, SIGNAL(okCalled()), &loop, SLOT(quit()));
+    loop.exec();
+    QString pin = w->getPin();
+    qDebug() << w->getPin();
+    return pin;
+}
+
+void MainWindow::pinRemind() {
+    start:
+    QString pin = getPinAgain();
+    try {
+        session->setToken(connection->authRequest(session->getCard(), pin));
+        return;
+    }
+    catch (ConnectionManager::AuthFailed) {
+        goto start;
+    }
+    catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
+}
+
 // Upper bar buttons
 void MainWindow::on_exitButton_clicked()
 {
     // close session here
-    delete session;
+    if (session != 0)
+        delete session;
     session = 0;
 
     FarewellDialogue * d = new FarewellDialogue;
     d->setWindowTitle("Reminder");
     d->setModal(true);
     d->show();
-    initialize();
+    connect(d, SIGNAL(okClicked()), this, SLOT(initialize()));
+    //initialize();
     return;
 }
 
@@ -122,42 +179,38 @@ void MainWindow::on_insertClick()
 void MainWindow::on_authPerformed(QString card, QString pin)
 {
     // ! CARD/PIN validation here !
-    bool ok = false;
     try {
-        qDebug() << connection->authRequest(card, pin);
-        if (card == "111" && pin == "1111") {
-            ok = true;
-        }
+        QString token = connection->authRequest(card, pin);
+        //qDebug() << connection->authRequest(card, pin);
+        session = new Session(token, card);
+        callMenu();
     }
     catch(ConnectionManager::BadConnection) {
-        qDebug() << "Bad connection problem";
+        invokeServerError();
     }
-    catch(ConnectionManager::TokenExpired) {
-        on_insertClick();
-    }
-
-    if (!ok) {
+    catch(ConnectionManager::AuthFailed) {
         AuthWidget * w = new AuthWidget;
         ui->toMainMenuButton->close();
         w->showError();
         connect(w, SIGNAL(authCalled(QString, QString)), this, SLOT(on_authPerformed(QString, QString)));
         switchWidgetTo(w);
-    } else {
-        // Start session if everything is ok
-        QString token = "1111";
-        session = new Session(token, card);
-
-        qDebug() << card;
-        qDebug() << pin;
-        callMenu();
     }
     return;
 }
 
 void MainWindow::on_balancePerformed() {
-    BalanceWidget *w = new BalanceWidget;
-    connect(w, SIGNAL(fromBalanceWithdrawCalled()), this, SLOT(on_withdrawPerformed()));
-    switchWidgetTo(w);
+    try {
+        std::list<int> list = connection->balanceRequest(session->getToken());
+        BalanceWidget *w = new BalanceWidget(list.front(), list.back());
+        connect(w, SIGNAL(fromBalanceWithdrawCalled()), this, SLOT(on_withdrawPerformed()));
+        switchWidgetTo(w);
+    }
+    catch(ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
+    catch(ConnectionManager::TokenExpired) {
+        pinRemind();
+    }
     return;
 }
 

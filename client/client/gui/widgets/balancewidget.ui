@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
+    <width>406</width>
     <height>276</height>
    </rect>
   </property>
@@ -29,46 +29,11 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="sumOnBalanceLabel">
-   <property name="geometry">
-    <rect>
-     <x>36</x>
-     <y>50</y>
-     <width>151</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">#sumOnBalanceLabel { font-size: 20pt; }</string>
-   </property>
-   <property name="text">
-    <string>SUM</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="currencyLabel">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>50</y>
-     <width>121</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">#currencyLabel { font-size: 20pt; }</string>
-   </property>
-   <property name="text">
-    <string>UAH</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="quickWithdrawalButton">
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>150</y>
+     <y>170</y>
      <width>181</width>
      <height>61</height>
     </rect>
@@ -76,6 +41,87 @@
    <property name="text">
     <string>Quick Withdrawal</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>60</y>
+     <width>371</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="2">
+     <widget class="QLabel" name="currencyLabel">
+      <property name="styleSheet">
+       <string notr="true">#currencyLabel { font-size: 20pt; }</string>
+      </property>
+      <property name="text">
+       <string>UAH</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Overall:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Available:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="overallLabel">
+      <property name="styleSheet">
+       <string notr="true">#sumOnBalanceLabel { font-size: 20pt; }</string>
+      </property>
+      <property name="text">
+       <string>SUM</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="availableLabel">
+      <property name="styleSheet">
+       <string notr="true">#availableLabel { font-size: 20pt; }</string>
+      </property>
+      <property name="text">
+       <string>SUM</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="currencyLabel2">
+      <property name="styleSheet">
+       <string notr="true">#sumOnBalanceLabel { font-size: 20pt; }</string>
+      </property>
+      <property name="text">
+       <string>UAH</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

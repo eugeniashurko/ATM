@@ -140,16 +140,16 @@ void Transfer::saveData(int source) {
 }
 
 void Transfer::performComplete() {
-    TransferReceipt * d = new TransferReceipt;
-    connect(d, SIGNAL(periodicTransferComplete()), this, SLOT(on_actionCompleted()));
-    d->setWindowTitle("Transfer Receipt");
-    d->setName(this->rec_name);
-    d->setCard(this->rec_card);
-    d->setSum(this->sum);
-    d->removeStartDate();
-    d->removeFrequency();
-    d->setModal(true);
-    d->show();
+    TransferReceipt d;
+    connect(&d, SIGNAL(periodicTransferComplete()), this, SLOT(on_actionCompleted()));
+    d.setWindowTitle("Transfer Receipt");
+    d.setName(this->rec_name);
+    d.setCard(this->rec_card);
+    d.setSum(this->sum);
+    d.removeStartDate();
+    d.removeFrequency();
+    d.setModal(true);
+    d.show();
  }
 
 void Transfer::on_actionCompleted() {

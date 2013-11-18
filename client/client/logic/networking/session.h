@@ -13,7 +13,8 @@ signals:
 
 public slots:
     void setToken(QString token);
-
+    const QString getToken() const {return _token; }
+    const QString getCard() const {return _card; }
 private:
     QString _token;
     QString _card;
