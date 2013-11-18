@@ -114,32 +114,6 @@ void MainWindow::invokeServerError() {
     }
 }
 
-const QString MainWindow::getPinAgain(bool after_error) {
-    PinRemindWidget * w = new PinRemindWidget;
-    switchWidgetTo(w);
-    QEventLoop loop;
-    connect(w, SIGNAL(okCalled()), &loop, SLOT(quit()));
-    loop.exec();
-    QString pin = w->getPin();
-    qDebug() << w->getPin();
-    return pin;
-}
-
-void MainWindow::pinRemind() {
-    start:
-    QString pin = getPinAgain();
-    try {
-        session->setToken(connection->authRequest(session->getCard(), pin));
-        return;
-    }
-    catch (ConnectionManager::AuthFailed) {
-        goto start;
-    }
-    catch (ConnectionManager::BadConnection) {
-        invokeServerError();
-    }
-}
-
 // Upper bar buttons
 void MainWindow::on_exitButton_clicked()
 {
@@ -198,18 +172,68 @@ void MainWindow::on_authPerformed(QString card, QString pin)
     return;
 }
 
+void MainWindow::tryBalance() {
+    std::list<int> list = connection->balanceRequest(session->getToken());
+    BalanceWidget *w = new BalanceWidget(list.front(), list.back());
+    connect(w, SIGNAL(fromBalanceWithdrawCalled()), this, SLOT(on_withdrawPerformed()));
+    switchWidgetTo(w);
+}
+
+void MainWindow::pinRemind(bool* ok, const bool after_error) {
+    PinRemindWidget * w = new PinRemindWidget;
+    if (after_error) {
+        w->showError();
+    }
+    switchWidgetTo(w);
+    QEventLoop loop;
+
+    connect(w, SIGNAL(okCalled()),
+            &loop, SLOT(quit()));
+    loop.exec();
+
+    QString pin = w->getPin();
+    qDebug() << w->getPin();
+
+    try {
+        session->setToken(connection->authRequest(session->getCard(), pin));
+        (*ok) = true;
+        return;
+    }
+    catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
+    catch (...) {
+        return;
+    }
+}
+
 void MainWindow::on_balancePerformed() {
     try {
-        std::list<int> list = connection->balanceRequest(session->getToken());
-        BalanceWidget *w = new BalanceWidget(list.front(), list.back());
-        connect(w, SIGNAL(fromBalanceWithdrawCalled()), this, SLOT(on_withdrawPerformed()));
-        switchWidgetTo(w);
+        tryBalance();
     }
     catch(ConnectionManager::BadConnection) {
         invokeServerError();
     }
     catch(ConnectionManager::TokenExpired) {
-        pinRemind();
+        bool ok = false;
+        pinRemind(&ok, false);
+        if (!ok) {
+            while (!ok) {
+                pinRemind(&ok, true);
+            }
+            try {
+                 tryBalance();
+            } catch(...) {
+                invokeServerError();
+            }
+        } else {
+            try {
+                 tryBalance();
+            } catch(...) {
+                invokeServerError();
+            }
+        }
+
     }
     return;
 }

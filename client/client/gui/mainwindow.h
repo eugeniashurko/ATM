@@ -21,9 +21,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void pinRemind();
-    const QString getPinAgain(bool after_error=false);
-
+    void pinRemind(bool* ok, const bool after_error=false);
+    void tryBalance();
 private slots:
     void initialize();
     void callMenu();
