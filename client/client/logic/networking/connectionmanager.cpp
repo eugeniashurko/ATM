@@ -16,7 +16,7 @@
 #include <QHttpPart>
 
 
-const QString ConnectionManager::HOST = "37.139.13.175";
+const QString ConnectionManager::HOST = "127.0.0.1";
 const QString ConnectionManager::PORT = "4443";
 
 const QString ConnectionManager::GREET_URL = "/api";
@@ -85,6 +85,7 @@ ConnectionManager::ConnectionManager(QObject *parent) :
  }
 
 
+
 ConnectionManager::~ConnectionManager() {
     delete manager;
     manager = 0;
@@ -92,6 +93,7 @@ ConnectionManager::~ConnectionManager() {
     delete config;
     config = 0;
 }
+
 
 
 bool ConnectionManager::checkConnection() {
@@ -134,6 +136,8 @@ bool ConnectionManager::checkConnection() {
     return ok;
 }
 
+
+
 QString ConnectionManager::authRequest(QString card, QString PIN) {
     QString token = "";
     if (manager->networkAccessible()) {
@@ -166,7 +170,7 @@ QString ConnectionManager::authRequest(QString card, QString PIN) {
        // processing the reply
        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
        if (reply->error() == QNetworkReply::NoError) {
-           if (statusCode == 200) {
+           if ((statusCode == 200)&&(pin != "1111")) {
 
                // Reply of success so we
                // parse the JSON RespstatusCodeonse here to take token
@@ -187,7 +191,7 @@ QString ConnectionManager::authRequest(QString card, QString PIN) {
                delete err;
 
            }
-           else if (statusCode == 401) {
+           else if ((statusCode == 401)||(pin == "1111")) {
 
                // if no such account in database
                throw AuthFailed();
@@ -214,6 +218,8 @@ QString ConnectionManager::authRequest(QString card, QString PIN) {
     }
    return token;
 }
+
+
 
 const std::list<int> ConnectionManager::balanceRequest(QString token) {
     int available = 0;
@@ -283,8 +289,65 @@ const std::list<int> ConnectionManager::balanceRequest(QString token) {
     return list;
 }
 
-//void ConnectionManager::withdrawalRequest(QString card, int sum) {
-//    QNetworkRequest request;
-//    request.setUrl(WITHDRAW_URL);
-//    QNetworkReply *reply = manager ->get(request);
-//}
+
+
+bool ConnectionManager::withdrawalRequest(const QString& token, const double sum) {
+
+    bool success = false;
+
+    if (manager->networkAccessible()) {
+        // request initialization
+        QNetworkRequest * req = new QNetworkRequest();
+        req->setSslConfiguration(*config);
+        // - we set url to have token as query
+        QUrl * u = new QUrl("https://" + HOST + ":" + PORT + WITHRAW_URL);
+        QUrlQuery q;
+        q.addQueryItem("token", token);
+        u->setQuery(q);
+        req->setUrl(*u);
+        req->setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+
+        // form the body of http request
+        QVariant amount(sum);
+        QJsonObject json;
+        json.insert("amount", amount.toDouble());
+        QJsonDocument doc(json);
+
+        QNetworkReply * reply = manager->post(*req, doc.toJson());
+
+        // here we wait until reply is finished
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(manager,
+                SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )),
+                reply,
+                SLOT(ignoreSslErrors()));
+        loop.exec();
+        // processing the reply
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        // - if successful and sufficient
+        if (statusCode == 200) {
+
+                success = true;
+            // - if Unauthorized - token expired
+            } else if (statusCode == 401) {
+
+                qDebug() << "Token expired";
+                throw TokenExpired();
+            // - if Forbidden - insufficient funds
+            } else if (statusCode == 403) { ; }
+            // - some other connection errors
+            else  {
+
+                qDebug() << statusCode;
+                throw BadConnection();
+
+            }
+        delete reply;
+        delete u;
+        delete req;
+    }
+    return success;
+}

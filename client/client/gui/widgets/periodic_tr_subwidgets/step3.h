@@ -43,7 +43,7 @@ private slots:
     void addToAccumulator(QString);
 
 public slots:
-    const int getAccumulator() const;
+    int getAccumulator() const;
 
 private:
     Ui::Step3 * ui;

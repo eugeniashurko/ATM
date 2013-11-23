@@ -11,7 +11,7 @@ class FarewellDialogue : public QDialog
 {
     Q_OBJECT
 signals:
-   void okClicked();
+   void okClicked(FarewellDialogue *);
 
 public:
     explicit FarewellDialogue(QWidget *parent = 0);

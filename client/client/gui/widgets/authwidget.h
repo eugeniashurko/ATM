@@ -17,6 +17,8 @@ signals:
 private slots:
     void on_authButton_clicked();
 
+    void on_pinInput_returnPressed();
+
 public slots:
     void showError();
 

@@ -39,3 +39,8 @@ void MenuWidget::on_supportButton_clicked()
 {
     emit supportCalled();
 }
+
+void MenuWidget::on_overflowButton_clicked()
+{
+    emit overflowCalled();
+}

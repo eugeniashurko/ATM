@@ -15,6 +15,6 @@ FarewellDialogue::~FarewellDialogue()
 
 void FarewellDialogue::on_farewellOkButton_clicked()
 {
-    emit okClicked();
     this->close();
+    emit okClicked(this);
 }

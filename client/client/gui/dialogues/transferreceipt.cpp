@@ -16,8 +16,8 @@ TransferReceipt::~TransferReceipt()
 
 void TransferReceipt::on_farewellOkButton_clicked()
 {
-    emit periodicTransferComplete();
     this->close();
+    emit periodicTransferComplete(this);
 }
 
 

@@ -22,7 +22,7 @@ public:
     static const QString confMessage;
 
     const QDate getStartDate() const;
-    const Frequency getFrequency() const;
+    Frequency getFrequency() const;
 
 private:
     Ui::Step4 * ui;

@@ -5,15 +5,20 @@
 #include "../dialogues/transferreceipt.h"
 
 
-PeriodicTransfer::PeriodicTransfer(QWidget *parent) :
+PeriodicTransfer::PeriodicTransfer(QString card,
+                                   QString name,
+                                   double su,
+                                   Frequency fr,
+                                   QDate d,
+                                   QWidget * parent) :
     QWidget(parent),
     ui(new Ui::PeriodicTransfer),
-    stack(new QStackedWidget()),
-    rec_card("00000000000000000"),
-    rec_name("Jon Snow"),
-    sum(0),
-    start_date(QDate::currentDate()),
-    freq(week)
+    stack(new QStackedWidget),
+    rec_card(card),
+    rec_name(name),
+    sum(su),
+    freq(fr),
+    start_date(d)
 {
     ui->setupUi(this);
     Step1 * s1 = new Step1;
@@ -41,7 +46,7 @@ PeriodicTransfer::~PeriodicTransfer()
 }
 
 
-// ! PUT FUCKIN VALIDATION HERE SOMEHOW !
+// ! PUT ALIDATION HERE SOMEHOW !
 void PeriodicTransfer::initializeStep(int prev)
 {
     QString message;
@@ -165,19 +170,22 @@ void PeriodicTransfer::saveData(int source) {
 }
 
 void PeriodicTransfer::performComplete() {
-    TransferReceipt d;
-    connect(&d, SIGNAL(periodicTransferComplete()), this, SLOT(on_actionCompleted()));
-    d.setWindowTitle("Periodic Transfer Receipt");
-    d.setName(this->rec_name);
-    d.setCard(this->rec_card);
-    d.setSum(this->sum);
-    d.setStartDate(this->start_date);
-    d.setFrequency(this->freq);
-    d.setModal(true);
-    d.show();
+    TransferReceipt * d = new TransferReceipt;
+    d->setWindowTitle("Periodic Transfer Receipt");
+    d->setName(this->rec_name);
+    d->setCard(this->rec_card);
+    d->setSum(this->sum);
+    d->setStartDate(this->start_date);
+    d->setFrequency(this->freq);
+    d->setModal(true);
+    d->show();
+    connect(d, SIGNAL(periodicTransferComplete(TransferReceipt *)),
+            this, SLOT(on_actionCompleted(TransferReceipt *)));
  }
 
-void PeriodicTransfer::on_actionCompleted() {
-     emit periodicTrCompleted();
+void PeriodicTransfer::on_actionCompleted(TransferReceipt * d) {
+    delete d;
+    d = 0;
+    emit periodicTrCompleted();
 }
 

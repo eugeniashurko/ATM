@@ -11,7 +11,7 @@ class WithdrawalReceipt : public QDialog
 {
     Q_OBJECT
 signals:
-    void withdrawed();
+    void withdrawed(WithdrawalReceipt *);
 
 public:
     explicit WithdrawalReceipt(QWidget *parent = 0);

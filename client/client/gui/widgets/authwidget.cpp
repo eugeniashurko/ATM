@@ -24,3 +24,8 @@ void AuthWidget::on_authButton_clicked()
 void AuthWidget::showError() {
     ui->errorLabel->show();
 }
+
+void AuthWidget::on_pinInput_returnPressed()
+{
+    on_authButton_clicked();
+}

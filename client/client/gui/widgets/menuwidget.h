@@ -24,7 +24,7 @@ signals:
     void withdrawCalled();
     void transferCalled();
     void periodicTrCalled();
-    //void overflowCalled();
+    void overflowCalled();
     void supportCalled();
 
 public:
@@ -34,6 +34,8 @@ public:
 
 private slots:
     void on_supportButton_clicked();
+
+    void on_overflowButton_clicked();
 
 private:
     Ui::MenuWidget *ui;

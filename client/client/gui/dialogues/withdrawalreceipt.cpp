@@ -19,7 +19,7 @@ WithdrawalReceipt::~WithdrawalReceipt()
 void WithdrawalReceipt::on_farewellOkButton_clicked()
 {
     this->close();
-    emit withdrawed();
+    emit withdrawed(this);
 }
 
 void WithdrawalReceipt::setCard(const QString c) {

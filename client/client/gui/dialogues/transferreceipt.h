@@ -15,7 +15,7 @@ class TransferReceipt : public QDialog
     Q_OBJECT
 
 signals:
-    void periodicTransferComplete();
+    void periodicTransferComplete(TransferReceipt *);
 
 public:
     explicit TransferReceipt(QWidget *parent = 0);

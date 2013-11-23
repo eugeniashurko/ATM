@@ -1,55 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Transfer</class>
- <widget class="QWidget" name="Transfer">
+ <class>NewOverflowWidget</class>
+ <widget class="QWidget" name="NewOverflowWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
-    <height>431</height>
+    <width>609</width>
+    <height>449</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
+  <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>531</width>
-     <height>51</height>
+     <x>20</x>
+     <y>70</y>
+     <width>571</width>
+     <height>261</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="stepsLayout">
-    <item>
-     <widget class="QLabel" name="stepDescrLabel">
-      <property name="text">
-       <string>&lt;Step and description&gt;</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QPushButton" name="confirmButton">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>360</y>
-     <width>171</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Confirm &gt;</string>
-   </property>
+   <layout class="QVBoxLayout" name="mainLayout"/>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>320</y>
+     <x>400</x>
+     <y>330</y>
      <width>191</width>
      <height>41</height>
     </rect>
@@ -67,35 +46,43 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="verticalLayoutWidget_2">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>60</y>
-     <width>571</width>
-     <height>261</height>
+     <x>20</x>
+     <y>20</y>
+     <width>531</width>
+     <height>51</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="mainLayout"/>
+   <layout class="QVBoxLayout" name="stepsLayout">
+    <item>
+     <widget class="QLabel" name="stepDescrLabel">
+      <property name="text">
+       <string>&lt;Step and description&gt;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QPushButton" name="backButton">
+  <widget class="QPushButton" name="confirmButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>360</y>
+     <x>420</x>
+     <y>370</y>
      <width>171</width>
      <height>61</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt; Back</string>
+    <string>Confirm &gt;</string>
    </property>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget_4">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>320</y>
+     <x>20</x>
+     <y>330</y>
      <width>181</width>
      <height>41</height>
     </rect>
@@ -109,6 +96,19 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QPushButton" name="backButton">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>370</y>
+     <width>171</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt; Back</string>
+   </property>
   </widget>
  </widget>
  <resources/>

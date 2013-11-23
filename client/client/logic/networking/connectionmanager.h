@@ -58,8 +58,12 @@ public:
     // - throws ConnectionManager::TokenExpired in case of time out
     const std::list<int> balanceRequest(QString token);
 
-//    void withdrawalRequest(QString card, int sum);
-
+    // Makes withdraw request
+    // - returns true if successful
+    // - returns false if insufficient funds
+    // - throws ConnectionManager::BadConnection exception in case of connection troubles
+    // - throws ConnectionManager::TokenExpired in case of time out
+    bool withdrawalRequest(const QString& token, const double sum);
 
 
 private:

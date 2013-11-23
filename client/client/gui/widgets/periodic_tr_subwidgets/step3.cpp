@@ -89,11 +89,23 @@ void Step3::on_cleanButton_clicked()
 }
 
 void Step3::addToAccumulator(QString input) {
-    acc += input;
-    ui->inputSumLabel->setText(acc + "  UAH");
+    if (acc.length() < 7) {
+        acc += input;
+        QString output = "";
+        qDebug() << acc.length();
+        int a = 0;
+        for (int i=(acc.length()-1); i>=0; --i) {
+            qDebug() << output;
+            output = acc[i] + output;
+            a++;
+            if (((a) % 3) == 0)
+                output = " " + output;
+        }
+        ui->inputSumLabel->setText(output + "  UAH");
+    }
 }
 
-const int Step3::getAccumulator() const {
+int Step3::getAccumulator() const {
     return acc.toInt();
 }
 

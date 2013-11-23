@@ -10,6 +10,8 @@
 #include "periodic_tr_subwidgets/step2.h"
 #include "periodic_tr_subwidgets/step3.h"
 #include "periodic_tr_subwidgets/summary.h"
+#include "../dialogues/transferreceipt.h"
+
 
 namespace Ui {
 class Transfer;
@@ -41,7 +43,7 @@ private slots:
     void saveData(int);
 
     void performComplete();
-    void on_actionCompleted();
+    void on_actionCompleted(TransferReceipt *);
 
 public:
     explicit Transfer(QWidget *parent = 0);

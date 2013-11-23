@@ -13,6 +13,8 @@
 #include "periodic_tr_subwidgets/step3.h"
 #include "periodic_tr_subwidgets/step4.h"
 #include "periodic_tr_subwidgets/summary.h"
+#include "../dialogues/transferreceipt.h"
+
 
 namespace Ui {
 class PeriodicTransfer;
@@ -49,15 +51,20 @@ private slots:
     void saveData(int);
 
     void performComplete();
-    void on_actionCompleted();
+    void on_actionCompleted(TransferReceipt *);
 
 
 public:
-    explicit PeriodicTransfer(QWidget *parent = 0);
+    explicit PeriodicTransfer(QString card = "",
+                              QString name = "",
+                              double s = 0,
+                              Frequency fr = week,
+                              QDate d = QDate::currentDate(),
+                              QWidget * parent = 0);
     ~PeriodicTransfer();
 
 private:    
-    Ui::PeriodicTransfer *ui;
+    Ui::PeriodicTransfer * ui;
     QStackedWidget * stack;
 
     // Attributes of periodic transfer - need to be remembered

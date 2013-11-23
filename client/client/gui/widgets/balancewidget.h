@@ -10,8 +10,6 @@ class BalanceWidget;
 class BalanceWidget : public QWidget
 {
     Q_OBJECT
-public slots:
-   void on_withdrawButton_clicked();
 
 signals:
    void fromBalanceWithdrawCalled();
@@ -19,6 +17,9 @@ signals:
 public:
     explicit BalanceWidget(const int available, const int hold, QWidget *parent = 0);
     ~BalanceWidget();
+
+private slots:
+   void on_quickWithdrawalButton_clicked();
 
 private:
     Ui::BalanceWidget *ui;

@@ -40,7 +40,9 @@ SOURCES += main.cpp\
     client/logic/networking/session.cpp \
     client/gui/dialogues/servererror.cpp \
     client/gui/widgets/servererrorwidget.cpp \
-    client/gui/widgets/pinremindwidget.cpp
+    client/gui/widgets/pinremindwidget.cpp \
+    client/gui/widgets/overflowwidget.cpp \
+    client/gui/widgets/newoverflowwidget.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -67,7 +69,9 @@ HEADERS  += client/gui/mainwindow.h \
     client/logic/networking/session.h \
     client/gui/dialogues/servererror.h \
     client/gui/widgets/servererrorwidget.h \
-    client/gui/widgets/pinremindwidget.h
+    client/gui/widgets/pinremindwidget.h \
+    client/gui/widgets/overflowwidget.h \
+    client/gui/widgets/newoverflowwidget.h
 
 
 FORMS    += client/gui/mainwindow.ui \
@@ -92,4 +96,6 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/dialogues/transferreceipt.ui \
     client/gui/dialogues/servererror.ui \
     client/gui/widgets/servererrorwidget.ui \
-    client/gui/widgets/pinremindwidget.ui
+    client/gui/widgets/pinremindwidget.ui \
+    client/gui/widgets/overflowwidget.ui \
+    client/gui/widgets/newoverflowwidget.ui

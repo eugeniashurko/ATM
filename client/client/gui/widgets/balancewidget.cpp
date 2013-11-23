@@ -6,7 +6,6 @@ BalanceWidget::BalanceWidget(const int available, const int hold, QWidget *paren
     ui(new Ui::BalanceWidget)
 {
     ui->setupUi(this);
-    connect(ui->quickWithdrawalButton, SIGNAL(clicked()), this, SLOT(on_withdrawButton_clicked()));
     QString av(QString::number(available));
     QString ov(QString::number(available+hold));
     ui->availableLabel->setText(av);
@@ -18,6 +17,7 @@ BalanceWidget::~BalanceWidget()
     delete ui;
 }
 
-void BalanceWidget::on_withdrawButton_clicked() {
+void BalanceWidget::on_quickWithdrawalButton_clicked()
+{
     emit fromBalanceWithdrawCalled();
 }

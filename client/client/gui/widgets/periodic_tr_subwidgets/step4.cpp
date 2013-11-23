@@ -25,7 +25,7 @@ const QDate Step4::getStartDate() const {
     return ui->calendarWidget->selectedDate();
 }
 
-const Frequency Step4::getFrequency() const {
+Frequency Step4::getFrequency() const {
     QString selected =ui->comboBox->itemData(ui->comboBox->currentIndex()).toString();
     Frequency res;
     if (selected == "week")
