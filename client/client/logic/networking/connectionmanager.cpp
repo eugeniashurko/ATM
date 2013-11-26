@@ -171,7 +171,7 @@ QString ConnectionManager::authRequest(QString card, QString PIN) {
        // processing the reply
        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
        if (reply->error() == QNetworkReply::NoError) {
-           if ((statusCode == 200)&&(pin != "1111")) {
+           if (statusCode == 200) {
 
                // Reply of success so we
                // parse the JSON RespstatusCodeonse here to take token
@@ -192,7 +192,7 @@ QString ConnectionManager::authRequest(QString card, QString PIN) {
                delete err;
 
            }
-           else if ((statusCode == 401)||(pin == "1111")) {
+           else if (statusCode == 401) {
 
                // if no such account in database
                throw AuthFailed();
@@ -381,9 +381,6 @@ const QString ConnectionManager::nameRequest(const QString& token, const QString
         int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
         if (statusCode == 200) {
-            if (card == "111") {
-                throw NotExist();
-            }
             // Reply of success so we
             // parse the JSON RespstatusCodeonse here to take token
             QByteArray reply_body = reply->readAll();
@@ -399,7 +396,6 @@ const QString ConnectionManager::nameRequest(const QString& token, const QString
             } else if (doc.isObject()) {
                 QVariantMap result = doc.toVariant().toMap();
                 name = result["name"].toString();
-                qDebug() << "Say ma name, " << name;
             }
             delete err;
 
@@ -428,4 +424,63 @@ const QString ConnectionManager::nameRequest(const QString& token, const QString
         delete req;
     }
     return name;
+}
+
+bool ConnectionManager::transferRequest(const QString& token, const QString& rec_card, const QString& sum) {
+    bool success = false;
+
+    if (manager->networkAccessible()) {
+        // request initialization
+        QNetworkRequest * req = new QNetworkRequest();
+        req->setSslConfiguration(*config);
+        // - we set url to have token as query
+        QUrl * u = new QUrl("https://" + HOST + ":" + PORT + TRANSFER_URL);
+        QUrlQuery q;
+        q.addQueryItem("token", token);
+        u->setQuery(q);
+        req->setUrl(*u);
+        req->setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+        // form the body of http request
+        QVariant card(rec_card), vsum(sum);
+        QJsonObject json;
+        json.insert("amount", vsum.toDouble());
+        json.insert("recepient", card.toString());
+        QJsonDocument doc(json);
+
+        QNetworkReply * reply = manager->post(*req, doc.toJson());
+
+        // here we wait until reply is finished
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(manager,
+                SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )),
+                reply,
+                SLOT(ignoreSslErrors()));
+        loop.exec();
+        // processing the reply
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (statusCode == 200) {
+            success = true;
+            // - if Unauthorized - token expired
+            } else if (statusCode == 401) {
+
+                qDebug() << "Token expired";
+                throw TokenExpired();
+
+            // - if Forbidden - insufficient funds
+            } else if (statusCode == 403) { ; }
+            // - some other connection errors
+            else  {
+
+                qDebug() << statusCode;
+                throw BadConnection();
+
+            }
+        delete reply;
+        delete u;
+        delete req;
+    }
+    return success;
 }

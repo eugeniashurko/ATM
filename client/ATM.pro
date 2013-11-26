@@ -36,14 +36,17 @@ SOURCES += main.cpp\
     client/gui/widgets/transfer.cpp \
     client/gui/widgets/supportwidget.cpp \
     client/gui/dialogues/transferreceipt.cpp \
-    client/logic/networking/connectionmanager.cpp \
-    client/logic/networking/session.cpp \
     client/gui/dialogues/servererror.cpp \
     client/gui/widgets/servererrorwidget.cpp \
     client/gui/widgets/pinremindwidget.cpp \
     client/gui/widgets/overflowwidget.cpp \
     client/gui/widgets/newoverflowwidget.cpp \
-    client/gui/dialogues/pinreminddialogue.cpp
+    client/gui/dialogues/pinreminddialogue.cpp \
+    client/logic/networking/connectionmanager.cpp \
+    client/logic/networking/session.cpp \
+    client/logic/utils/LogFile.cpp \
+    client/logic/utils/Validate.cpp \
+    client/logic/utils/Service.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -52,28 +55,31 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/menuwidget.h \
     client/gui/widgets/balancewidget.h \
     client/gui/widgets/withdrawwidget.h \
-    client/gui/dialogues/farewelldialogue.h \
     client/gui/widgets/periodictransfer.h \
     client/gui/widgets/periodic_tr_subwidgets/step1.h \
     client/gui/widgets/periodic_tr_subwidgets/step2.h \
     client/gui/widgets/periodic_tr_subwidgets/step3.h \
     client/gui/widgets/periodic_tr_subwidgets/step4.h \
     client/gui/widgets/periodic_tr_subwidgets/summary.h \
-    client/gui/dialogues/withdrawalreceipt.h \
     client/gui/widgets/customsuminput.h \
     client/gui/widgets/withdrawresultok.h \
     client/gui/widgets/transfer.h \
     client/gui/widgets/supportwidget.h \
-    client/gui/dialogues/transactionreceipt.h \
-    client/gui/dialogues/transferreceipt.h \
-    client/logic/networking/connectionmanager.h \
-    client/logic/networking/session.h \
-    client/gui/dialogues/servererror.h \
     client/gui/widgets/servererrorwidget.h \
     client/gui/widgets/pinremindwidget.h \
     client/gui/widgets/overflowwidget.h \
     client/gui/widgets/newoverflowwidget.h \
-    client/gui/dialogues/pinreminddialogue.h
+    client/gui/dialogues/farewelldialogue.h \
+    client/gui/dialogues/withdrawalreceipt.h \
+    client/gui/dialogues/transactionreceipt.h \
+    client/gui/dialogues/transferreceipt.h \
+    client/gui/dialogues/servererror.h \
+    client/gui/dialogues/pinreminddialogue.h \
+    client/logic/networking/connectionmanager.h \
+    client/logic/networking/session.h \
+    client/logic/utils/LogFile.h \
+    client/logic/utils/Validate.h \
+    client/logic/utils/Service.h
 
 
 FORMS    += client/gui/mainwindow.ui \

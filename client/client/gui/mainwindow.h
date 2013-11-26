@@ -6,9 +6,12 @@
 
 #include "../logic/networking/session.h"
 #include "../logic/networking/connectionmanager.h"
+#include "../logic/utils/LogFile.h"
 #include "dialogues/servererror.h"
 #include "dialogues/farewelldialogue.h"
 #include "widgets/withdrawresultok.h"
+
+
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +27,7 @@ signals:
     void reAuthSuccess();
     void checkBalanceSuccess();
     void checkBalanceFailure();
+    void insufficientFunds();
 
 public:
 
@@ -61,6 +65,7 @@ private slots:
     // transfer util-methods
     void on_checkReceiverCard(QString card);
     void on_checkBalance(QString sum);
+    void makeTransfer(QString, QString, QString);
 
     void on_newOverflow();
 

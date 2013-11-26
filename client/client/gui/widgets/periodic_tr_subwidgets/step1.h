@@ -23,6 +23,7 @@ public:
     static const QString confMessage;
     const QString getCardNumber();
     void showError();
+    void closeError();
 
 private:
     Ui::Step1 * ui;

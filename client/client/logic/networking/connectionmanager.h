@@ -75,6 +75,8 @@ public:
 
     const QString nameRequest(const QString& token, const QString& card);
 
+    bool transferRequest(const QString& token, const QString& rec_card, const QString& sum);
+
 private:
     QNetworkAccessManager * manager;
     // ssl configurations should be set to every request

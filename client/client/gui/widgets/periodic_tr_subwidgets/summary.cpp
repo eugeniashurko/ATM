@@ -16,6 +16,7 @@ Summary::Summary(QWidget *parent) :
 {
 
     ui->setupUi(this);
+    ui->errorLabel->close();
 }
 
 Summary::~Summary() { delete ui;  }
@@ -66,3 +67,12 @@ void Summary::removeFrequency() {
     ui->freqConfLabel->close();
     ui->freqLabel->close();
 }
+
+void Summary::showError() {
+    ui->errorLabel->show();
+}
+
+void Summary::closeError() {
+    ui->errorLabel->close();
+}
+

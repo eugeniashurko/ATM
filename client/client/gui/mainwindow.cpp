@@ -281,6 +281,11 @@ void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
     try {
         bool success = connection->withdrawalRequest(session->getToken(), sum);
         if (success) {
+            writeLog((session->getCard()).toStdString(),
+                     QDateTime::currentDateTimeUtc().toString().toStdString(),
+                     "Withdrawal",
+                     QString::number(sum).toStdString(),
+                     "OK");
             WithdrawalReceipt * d = new WithdrawalReceipt;
             connect(d, SIGNAL(withdrawed(WithdrawalReceipt *)),
                     this, SLOT(callMenu()));
@@ -299,7 +304,13 @@ void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
         makeWithdrawal(sum, widget);
     }
     catch (ConnectionManager::BadConnection) {
+        writeLog(session->getCard().toStdString(),
+                 QDateTime::currentDateTimeUtc().toString().toStdString(),
+                 "Withdrawal",
+                 QString::number(sum).toStdString(),
+                 "FAIL");
         invokeServerError();
+
     }
 }
 
@@ -315,8 +326,54 @@ void MainWindow::on_transferFromMenu() {
     connect(this, SIGNAL(checkBalanceFailure()), w, SLOT(on_checkBalanceFailure()));
     connect(this, SIGNAL(checkBalanceSuccess()), w, SLOT(on_checkBalanceSuccess()));
 
+    connect(w, SIGNAL(transferPerformCalled(QString,QString,QString)),
+            this, SLOT(makeTransfer(QString, QString, QString)));
+
+    connect(this, SIGNAL(insufficientFunds()), w, SLOT(on_insufficientFunds()));
+
     switchWidgetTo(w);
     return;
+}
+
+void MainWindow::makeTransfer(QString card, QString name, QString sum) {
+    try {
+        bool success = connection->transferRequest(session->getToken(),
+                                                   card, sum);
+        if (success) {
+            writeLog((session->getCard()).toStdString(),
+                     QDateTime::currentDateTimeUtc().toString().toStdString(),
+                     "Transfer : "+ card.toStdString(),
+                     sum.toStdString(),
+                     "OK");
+            TransferReceipt * d = new TransferReceipt;
+            connect(d, SIGNAL(periodicTransferComplete(TransferReceipt *)),
+                    this, SLOT(callMenu()));
+            d->setWindowTitle("Transfer Receipt");
+            d->setName(name);
+            d->setCard(card);
+            d->setSum(sum.toInt());
+            d->removeStartDate();
+            d->removeFrequency();
+            d->setModal(true);
+            d->show();
+        }
+        else {
+            qDebug() << "Well, insufficient funds";
+            emit insufficientFunds();
+        }
+    }
+    catch (ConnectionManager::TokenExpired) {
+        pinRemind();
+        makeTransfer(card, name, sum);
+    }
+    catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+        writeLog((session->getCard()).toStdString(),
+                 QDateTime::currentDateTimeUtc().toString().toStdString(),
+                 "Transfer : "+ card.toStdString(),
+                 sum.toStdString(),
+                 "FAIL");
+    }
 }
 
 

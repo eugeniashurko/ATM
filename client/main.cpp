@@ -1,38 +1,17 @@
 #include <QApplication>
 #include <QDebug>
-
+#include <QFile>
 #include <iostream>
-
+#include <string>
 #include "client/gui/mainwindow.h"
 #include "client/logic/networking/connectionmanager.h"
-//#include "server/account.h"
+#include "client/logic/utils/LogFile.h"
 
 int main(int argc, char *argv[])
 {
-
-//    Account * account1 = new Account("1111111", "1111", "Jack", "London");
-//    printf("card: %s", qPrintable(account1->cardNumber()));
-//    cout<<endl;
-//    printf("name: %s", qPrintable(account1->name()));
-//    cout<<endl;
-//    printf("surname: %s", qPrintable(account1->surname()));
-//    cout<<endl;
-//    cout<<"balance: "<<account1->balance();
-//    cout<<endl;
-//    cout<<"blocked sum: "<<account1->blockedSum();
-//    cout<<endl;
-//    cout<<"maxBalance: "<<account1->maxBalance();
-//    cout<<endl;
-
-
-
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
-
-    ConnectionManager * m = new ConnectionManager();
-
-//    qDebug() << m->balanceRequest("token");
 
     return a.exec();
 }

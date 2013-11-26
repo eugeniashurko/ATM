@@ -30,6 +30,8 @@ public:
 
     void removeStartDate();
     void removeFrequency();
+    void showError();
+    void closeError();
 
 private:
     Ui::Summary * ui;

@@ -111,3 +111,8 @@ QString Step3::getAccumulator() const {
 void Step3::showError() {
     ui->errorLabel->show();
 }
+
+void Step3::closeError() {
+    ui->errorLabel->close();
+}
+

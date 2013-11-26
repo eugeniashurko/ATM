@@ -25,8 +25,6 @@ Transfer::Transfer(QWidget *parent) :
     connect(stack, SIGNAL(currentChanged(int)), this, SLOT(initializeStep(int)));
     connect(this, SIGNAL(dataReceived(int)),
             this, SLOT(saveData(int)));
-    connect(this, SIGNAL(completeCalled()),
-            this, SLOT(performComplete()));
     initializeStep(0);
 }
 
@@ -53,6 +51,7 @@ void Transfer::initializeStep(int prev)
             bB = Step1::backButton;
             cM = Step1::confMessage;
             bM = Step1::backMessage;
+            static_cast<Step1 *>(stack->currentWidget())->closeError();
         }
         break;
 
@@ -63,11 +62,8 @@ void Transfer::initializeStep(int prev)
             bB = Step2::backButton;
             cM = Step2::confMessage;
             bM = Step2::backMessage;
-            Step2 * s2 = dynamic_cast<Step2 *>(stack->currentWidget());
-            s2->setAccount(rec_card);
-            // ! Here we get from database account's owner name !
-            // ! and set it as rec_name
-            s2->setName(rec_name);
+            static_cast<Step2 *>(stack->currentWidget())->setAccount(rec_card);
+            static_cast<Step2 *>(stack->currentWidget())->setName(rec_name);
         }
         break;
 
@@ -78,6 +74,7 @@ void Transfer::initializeStep(int prev)
             bB = Step3::backButton;
             cM = Step3::confMessage;
             bM = Step3::backMessage;
+            static_cast<Step3 *>(stack->currentWidget())->closeError();
         }
         break;
     case 3:
@@ -87,12 +84,13 @@ void Transfer::initializeStep(int prev)
             bB = Summary::backButton;
             cM = Summary::confMessage;
             bM = Summary::backMessage;
-            Summary * s = dynamic_cast<Summary *>(stack->currentWidget());
+            Summary * s = static_cast<Summary *>(stack->currentWidget());
             s->setCardNumber(rec_card);
             s->setName(rec_name);
             s->setSum(sum);
             s->removeStartDate();
             s->removeFrequency();
+            s->closeError();
         }
         break;
      default:
@@ -115,13 +113,8 @@ void Transfer::on_confirmButton_clicked()
                 emit changeStackedWidgetIndex(stack->currentIndex()+1);
             }
         }
-//        qDebug() << stack->currentIndex();
-//        emit dataReceived(stack->currentIndex());
-//        if (stack->currentIndex() != 0) {
-//            emit changeStackedWidgetIndex(stack->currentIndex()+1);
-//        }
     } else {
-        emit completeCalled();
+        emit transferPerformCalled(rec_card, rec_name, QString::number(sum));
     }
 }
 
@@ -158,42 +151,23 @@ void Transfer::saveData(int source) {
     }
 }
 
-void Transfer::performComplete() {
-    TransferReceipt * d = new TransferReceipt;
-    connect(d, SIGNAL(periodicTransferComplete(TransferReceipt *)),
-            this, SLOT(on_actionCompleted(TransferReceipt *)));
-    d->setWindowTitle("Transfer Receipt");
-    d->setName(this->rec_name);
-    d->setCard(this->rec_card);
-    d->setSum(this->sum);
-    d->removeStartDate();
-    d->removeFrequency();
-    d->setModal(true);
-    d->show();
- }
-
-void Transfer::on_actionCompleted(TransferReceipt * d) {
-    delete d;
-    emit transferCompleted();
-}
-
 void Transfer::on_checkReceiverCardFailure() {
-    qDebug() << "Failure received";
     (static_cast<Step1 *>(stack->currentWidget()))->showError();
 }
 
 void Transfer::on_checkReceiverCardSuccess(QString name) {
-    qDebug() << "Success received and sent";
     rec_name = name;
     card_ok = true;
 }
 
 void Transfer::on_checkBalanceFailure() {
-    qDebug() << "Failure received";
     (static_cast<Step3 *>(stack->currentWidget()))->showError();
 }
 
 void Transfer::on_checkBalanceSuccess() {
-    qDebug() << "Success received and sent";
     sum_ok = true;
+}
+
+void Transfer::on_insufficientFunds() {
+    static_cast<Summary *>(stack->currentWidget())->showError();
 }

@@ -26,6 +26,7 @@ public:
     static const QString backMessage;
     static const QString confMessage;
     void showError();
+    void closeError();
 
 private slots:
     void on_num1Button_clicked();

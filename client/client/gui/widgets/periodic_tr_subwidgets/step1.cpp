@@ -27,3 +27,7 @@ Step1::~Step1() {  delete ui; }
 void Step1::showError() {
     ui->errorLabel->show();
 }
+
+void Step1::closeError() {
+    ui->errorLabel->close();
+}

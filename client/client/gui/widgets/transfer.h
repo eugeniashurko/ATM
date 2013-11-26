@@ -33,6 +33,7 @@ signals:
     void checkReceiverCardCalled(const QString& card);
     void cardInputSuccess(bool);
     void checkBalanceCalled(QString);
+    void transferPerformCalled(QString, QString, QString);
 
 private slots:
     void on_confirmButton_clicked();
@@ -45,14 +46,13 @@ private slots:
 
     void saveData(int);
 
-    void performComplete();
-    void on_actionCompleted(TransferReceipt *);
-
     void on_checkReceiverCardFailure();
     void on_checkReceiverCardSuccess(QString name);
 
     void on_checkBalanceFailure();
     void on_checkBalanceSuccess();
+
+    void on_insufficientFunds();
 
 public:
     explicit Transfer(QWidget *parent = 0);
