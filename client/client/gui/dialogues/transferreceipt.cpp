@@ -31,7 +31,7 @@ void TransferReceipt::setCard(QString card) {
 }
 
 void TransferReceipt::setSum(int sum) {
-    ui->sumConfLabel->setText(QString::number(sum));
+    ui->sumConfLabel->setText(QString::number(sum)+" UAH");
 }
 
 void TransferReceipt::setStartDate(QDate d) {

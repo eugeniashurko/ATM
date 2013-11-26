@@ -16,6 +16,7 @@ Step3::Step3(QWidget *parent) :
     acc("")
 {
     ui->setupUi(this);
+    ui->errorLabel->close();
     connect(this, SIGNAL(input(QString)), this, SLOT(addToAccumulator(QString)));
 }
 
@@ -92,10 +93,8 @@ void Step3::addToAccumulator(QString input) {
     if (acc.length() < 7) {
         acc += input;
         QString output = "";
-        qDebug() << acc.length();
         int a = 0;
         for (int i=(acc.length()-1); i>=0; --i) {
-            qDebug() << output;
             output = acc[i] + output;
             a++;
             if (((a) % 3) == 0)
@@ -105,7 +104,10 @@ void Step3::addToAccumulator(QString input) {
     }
 }
 
-int Step3::getAccumulator() const {
-    return acc.toInt();
+QString Step3::getAccumulator() const {
+    return acc;
 }
 
+void Step3::showError() {
+    ui->errorLabel->show();
+}

@@ -30,7 +30,7 @@ void Summary::setName(QString n) {
 }
 
 void Summary::setSum(int s) {
-    ui->sumConfLabel->setText(QString::number(s));
+    ui->sumConfLabel->setText(QString::number(s)+" UAH");
 }
 
 void Summary::setStartDate(QDate d) {

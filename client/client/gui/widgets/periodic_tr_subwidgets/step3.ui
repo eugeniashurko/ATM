@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>339</width>
-    <height>300</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
      <x>20</x>
      <y>20</y>
      <width>291</width>
-     <height>51</height>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -52,7 +52,7 @@
    <property name="geometry">
     <rect>
      <x>80</x>
-     <y>70</y>
+     <y>80</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -65,7 +65,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>70</y>
+     <y>80</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -78,7 +78,7 @@
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>70</y>
+     <y>80</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -91,7 +91,7 @@
    <property name="geometry">
     <rect>
      <x>80</x>
-     <y>120</y>
+     <y>130</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -104,7 +104,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>120</y>
+     <y>130</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -117,7 +117,7 @@
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>120</y>
+     <y>130</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -130,7 +130,7 @@
    <property name="geometry">
     <rect>
      <x>80</x>
-     <y>170</y>
+     <y>180</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -143,7 +143,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>170</y>
+     <y>180</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -156,7 +156,7 @@
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>170</y>
+     <y>180</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -169,7 +169,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>220</y>
+     <y>230</y>
      <width>41</width>
      <height>41</height>
     </rect>
@@ -182,14 +182,13 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>70</y>
+     <y>80</y>
      <width>71</width>
      <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">
-</string>
+    <string notr="true"/>
    </property>
    <property name="text">
     <string> &lt; Edit</string>
@@ -199,7 +198,7 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>120</y>
+     <y>130</y>
      <width>71</width>
      <height>41</height>
     </rect>
@@ -209,6 +208,25 @@
    </property>
    <property name="text">
     <string>Clean</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="errorLabel">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>50</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#errorLabel {color: red;}</string>
+   </property>
+   <property name="text">
+    <string>Insufficient funds for current transfer!</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

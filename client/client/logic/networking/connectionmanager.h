@@ -38,6 +38,13 @@ public:
         ~AuthFailed() {}
     };
 
+    // Card is not found in database on transfer call
+    class NotExist {
+    public:
+        NotExist() {}
+        ~NotExist() {}
+    };
+
     explicit ConnectionManager(QObject *parent = 0);
     ~ConnectionManager();
 
@@ -66,6 +73,8 @@ public:
     bool withdrawalRequest(const QString& token, const double sum);
 
 
+    const QString nameRequest(const QString& token, const QString& card);
+
 private:
     QNetworkAccessManager * manager;
     // ssl configurations should be set to every request
@@ -77,6 +86,7 @@ private:
 
     // urls defined in API
     static const QString GREET_URL;
+    static const QString NAME_URL;
     static const QString AUTH_URL;
     static const QString BALANCE_URL;
     static const QString WITHRAW_URL;

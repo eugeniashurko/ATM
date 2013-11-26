@@ -25,6 +25,7 @@ public:
     static const bool confButton;
     static const QString backMessage;
     static const QString confMessage;
+    void showError();
 
 private slots:
     void on_num1Button_clicked();
@@ -43,7 +44,7 @@ private slots:
     void addToAccumulator(QString);
 
 public slots:
-    int getAccumulator() const;
+    QString getAccumulator() const;
 
 private:
     Ui::Step3 * ui;

@@ -16,7 +16,7 @@
 #include <QHttpPart>
 
 
-const QString ConnectionManager::HOST = "127.0.0.1";
+const QString ConnectionManager::HOST = "37.139.13.175";
 const QString ConnectionManager::PORT = "4443";
 
 const QString ConnectionManager::GREET_URL = "/api";
@@ -26,6 +26,7 @@ const QString ConnectionManager::WITHRAW_URL = "/api/withdraw";
 const QString ConnectionManager::TRANSFER_URL = "/api/transfer";
 const QString ConnectionManager::PERIODIC_URL = "/api/periodic";
 const QString ConnectionManager::OVERFLOW_URL = "/api/overflow";
+const QString ConnectionManager::NAME_URL = "/api/name";
 
 
 ConnectionManager::ConnectionManager(QObject *parent) :
@@ -311,7 +312,7 @@ bool ConnectionManager::withdrawalRequest(const QString& token, const double sum
         // form the body of http request
         QVariant amount(sum);
         QJsonObject json;
-        json.insert("amount", amount.toDouble());
+        json.insert("amount", amount.toString());
         QJsonDocument doc(json);
 
         QNetworkReply * reply = manager->post(*req, doc.toJson());
@@ -340,6 +341,83 @@ bool ConnectionManager::withdrawalRequest(const QString& token, const double sum
             } else if (statusCode == 403) { ; }
             // - some other connection errors
             else  {
+                qDebug() << statusCode;
+                throw BadConnection();
+            }
+        delete reply;
+        delete u;
+        delete req;
+    }
+    return success;
+}
+
+
+const QString ConnectionManager::nameRequest(const QString& token, const QString& card) {
+    QString name="";
+    if (manager->networkAccessible()) {
+        // request initialization
+        QNetworkRequest * req = new QNetworkRequest();
+        req->setSslConfiguration(*config);
+        // - we set url to have token as query
+        QUrl * u = new QUrl("https://" + HOST + ":" + PORT + NAME_URL);
+        QUrlQuery q;
+        q.addQueryItem("token", token);
+        q.addQueryItem("card", card);
+        u->setQuery(q);
+        req->setUrl(*u);
+        req->setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+        QNetworkReply * reply = manager->get(*req);
+
+        // here we wait until reply is finished
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(manager,
+                SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )),
+                reply,
+                SLOT(ignoreSslErrors()));
+        loop.exec();
+        // processing the reply
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (statusCode == 200) {
+            if (card == "111") {
+                throw NotExist();
+            }
+            // Reply of success so we
+            // parse the JSON RespstatusCodeonse here to take token
+            QByteArray reply_body = reply->readAll();
+            QJsonParseError * err = new QJsonParseError;
+            QJsonDocument doc = QJsonDocument::fromJson(reply_body, err);
+
+            if (err->error != 0) {
+                qDebug() << err->errorString();
+            }
+
+            if (doc.isNull()) {
+                qDebug() << "Invalid JSON-document 'config.json'";
+            } else if (doc.isObject()) {
+                QVariantMap result = doc.toVariant().toMap();
+                name = result["name"].toString();
+                qDebug() << "Say ma name, " << name;
+            }
+            delete err;
+
+
+            // - if Unauthorized - token expired
+            } else if (statusCode == 400){
+
+                qDebug() << "Card does not exist";
+                throw NotExist();
+
+            } else if (statusCode == 401) {
+
+                qDebug() << "Token expired";
+                throw TokenExpired();
+            // - if Forbidden - insufficient funds
+            } else if (statusCode == 403) { ; }
+            // - some other connection errors
+            else  {
 
                 qDebug() << statusCode;
                 throw BadConnection();
@@ -349,5 +427,5 @@ bool ConnectionManager::withdrawalRequest(const QString& token, const double sum
         delete u;
         delete req;
     }
-    return success;
+    return name;
 }

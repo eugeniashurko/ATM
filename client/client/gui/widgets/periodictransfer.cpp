@@ -152,7 +152,7 @@ void PeriodicTransfer::saveData(int source) {
     case 2:
         {
             Step3 * s3 = dynamic_cast<Step3 *>(stack->currentWidget());
-            sum = s3->getAccumulator();
+            sum = s3->getAccumulator().toInt();
             // balance sufficiency validation
         }
         break;

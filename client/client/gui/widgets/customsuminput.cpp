@@ -19,5 +19,5 @@ CustomSumInput::~CustomSumInput()
 
 void CustomSumInput::on_confirmButton_clicked()
 {
-    emit sumProvided(input->getAccumulator());
+    emit sumProvided(input->getAccumulator().toInt());
 }

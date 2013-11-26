@@ -124,7 +124,7 @@ void NewOverflowWidget::saveData(int source) {
     case 2:
         {
             Step3 * s3 = dynamic_cast<Step3 *>(stack->currentWidget());
-            _max_sum = s3->getAccumulator();
+            _max_sum = s3->getAccumulator().toDouble();
             // balance sufficiency validation
         }
         break;

@@ -18,6 +18,7 @@
 #include "widgets/transfer.h"
 #include "widgets/supportwidget.h"
 #include "widgets/servererrorwidget.h"
+#include "dialogues/pinreminddialogue.h"
 #include "widgets/pinremindwidget.h"
 #include "widgets/overflowwidget.h"
 #include "widgets/newoverflowwidget.h"
@@ -166,7 +167,6 @@ void MainWindow::on_authFromMenu(QString card, QString pin)
     // ! CARD/PIN validation here !
     try {
         QString token = connection->authRequest(card, pin);
-        //qDebug() << connection->authRequest(card, pin);
         session = new Session(token, card);
         callMenu();
     }
@@ -183,70 +183,54 @@ void MainWindow::on_authFromMenu(QString card, QString pin)
     return;
 }
 
-void MainWindow::tryBalance() {
-    std::list<int> list = connection->balanceRequest(session->getToken());
-    BalanceWidget *w = new BalanceWidget(list.front(), list.back());
-    connect(w, SIGNAL(fromBalanceWithdrawCalled()), this, SLOT(on_withdrawFromMenu()));
-    switchWidgetTo(w);
-}
 
-void MainWindow::pinRemind(bool* ok, const bool after_error) {
-    PinRemindWidget * w = new PinRemindWidget;
-    if (after_error) {
-        w->showError();
-    }
-    switchWidgetTo(w);
-    QEventLoop loop;
-
-    connect(w, SIGNAL(okCalled()),
-            &loop, SLOT(quit()));
-    loop.exec();
-
-    QString pin = w->getPin();
-    qDebug() << w->getPin();
-
+void MainWindow::tryReAuth(QString pin) {
     try {
         session->setToken(connection->authRequest(session->getCard(), pin));
-        (*ok) = true;
-        return;
+        emit reAuthSuccess();
     }
     catch (ConnectionManager::BadConnection) {
         invokeServerError();
     }
     catch (ConnectionManager::AuthFailed) {
-        return;
+        emit reAuthFialed();
     }
+}
+
+void MainWindow::pinRemind() {
+    PinRemindDialogue * d = new PinRemindDialogue;
+    d->setWindowTitle("PIN Reminder");
+    d->setModal(true);
+    d->show();
+    connect(d,SIGNAL(exitCalled()), this, SLOT(on_exitButton_clicked()));
+    connect(d, SIGNAL(okCalled(QString)),
+            this, SLOT(tryReAuth(QString)));
+    connect(this, SIGNAL(reAuthFialed()), d, SLOT(on_reAuthFailed()));
+
+
+    QEventLoop loop;
+    connect(this, SIGNAL(reAuthSuccess()), &loop, SLOT(quit()));
+    loop.exec();
+    d->close();
+
 }
 
 void MainWindow::on_balanceFromMenu() {
     try {
-        tryBalance();
+        std::list<int> list = connection->balanceRequest(session->getToken());
+        BalanceWidget *w = new BalanceWidget(list.front(), list.back());
+        connect(w, SIGNAL(fromBalanceWithdrawCalled()), this, SLOT(on_withdrawFromMenu()));
+        switchWidgetTo(w);
+        return;
     }
     catch(ConnectionManager::BadConnection) {
         invokeServerError();
     }
     catch(ConnectionManager::TokenExpired) {
-        bool ok = false;
-        pinRemind(&ok, false);
-        if (!ok) {
-            while (!ok) {
-                pinRemind(&ok, true);
-            }
-            try {
-                 tryBalance();
-            } catch(ConnectionManager::BadConnection) {
-                invokeServerError();
-            }
-        } else {
-            try {
-                 tryBalance();
-            } catch(ConnectionManager::BadConnection) {
-                invokeServerError();
-            }
-        }
-
+        pinRemind();
+        on_balanceFromMenu();
     }
-    return;
+
 }
 
 
@@ -295,13 +279,13 @@ void MainWindow::on_sumProvided(int sum) {
 // actually makes server request and validates all data
 void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
     try {
-        bool success = true;
-        //bool success = connection->withdrawalRequest(session->getToken(), sum);
+        bool success = connection->withdrawalRequest(session->getToken(), sum);
         if (success) {
             WithdrawalReceipt * d = new WithdrawalReceipt;
             connect(d, SIGNAL(withdrawed(WithdrawalReceipt *)),
                     this, SLOT(callMenu()));
             d->setSum(sum);
+            d->setCard(session->getCard());
             d->setWindowTitle("Withdrawal Receipt");
             d->setModal(true);
             d->show();
@@ -311,24 +295,8 @@ void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
         }
     }
     catch (ConnectionManager::TokenExpired) {
-        bool ok = false;
-        pinRemind(&ok, false);
-        if (!ok) {
-            while (!ok) {
-                pinRemind(&ok, true);
-            }
-            try {
-                 tryBalance();
-            } catch(...) {
-                invokeServerError();
-            }
-        } else {
-            try {
-                 tryBalance();
-            } catch(...) {
-                invokeServerError();
-            }
-        }
+        pinRemind();
+        makeWithdrawal(sum, widget);
     }
     catch (ConnectionManager::BadConnection) {
         invokeServerError();
@@ -339,9 +307,58 @@ void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
 void MainWindow::on_transferFromMenu() {
     Transfer * w = new Transfer;
     connect(w, SIGNAL(transferCompleted()), this, SLOT(callMenu()));
+    connect(w, SIGNAL(checkReceiverCardCalled(QString)), this, SLOT(on_checkReceiverCard(QString)));
+    connect(this, SIGNAL(checkReceiverFailure()), w, SLOT(on_checkReceiverCardFailure()));
+    connect(this, SIGNAL(checkReceiverSuccess(QString)), w, SLOT(on_checkReceiverCardSuccess(QString)));
+
+    connect(w, SIGNAL(checkBalanceCalled(QString)), this, SLOT(on_checkBalance(QString)));
+    connect(this, SIGNAL(checkBalanceFailure()), w, SLOT(on_checkBalanceFailure()));
+    connect(this, SIGNAL(checkBalanceSuccess()), w, SLOT(on_checkBalanceSuccess()));
+
     switchWidgetTo(w);
     return;
 }
+
+
+void MainWindow::on_checkReceiverCard(QString card) {
+    QString name = "";
+    try {
+        name = connection->nameRequest(session->getToken(), card);
+        emit checkReceiverSuccess(name);
+    }
+    catch (ConnectionManager::NotExist) {
+        emit checkReceiverFailure();
+    }
+    catch (ConnectionManager::TokenExpired) {
+        pinRemind();
+        on_checkReceiverCard(card);
+    }
+    catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
+}
+
+void MainWindow::on_checkBalance(QString sum) {
+    int requested_sum = sum.toInt();
+    int real_sum = 0;
+    try {
+        std::list<int> list = connection->balanceRequest(session->getToken());
+        real_sum = list.front();
+        if (real_sum >= requested_sum) {
+            emit checkBalanceSuccess();
+        } else {
+            emit checkBalanceFailure();
+        }
+    }
+    catch (ConnectionManager::TokenExpired) {
+        pinRemind();
+        on_checkBalance(sum);
+    }
+    catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
+}
+
 
 void MainWindow::on_overflowFromMenu() {
     OverflowWidget * w = new OverflowWidget;

@@ -17,6 +17,13 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+signals:
+    void checkReceiverFailure();
+    void checkReceiverSuccess(const QString&);
+    void reAuthFialed();
+    void reAuthSuccess();
+    void checkBalanceSuccess();
+    void checkBalanceFailure();
 
 public:
 
@@ -24,7 +31,7 @@ public:
     ~MainWindow();
 
 private slots:
-
+    void tryReAuth(QString);
     // slot util-methods
     void initialize();
     void reinitialize(FarewellDialogue *);
@@ -51,13 +58,16 @@ private slots:
     void customSumInput();
     void makeWithdrawal(const double, WithdrawResultOk * widget);
 
+    // transfer util-methods
+    void on_checkReceiverCard(QString card);
+    void on_checkBalance(QString sum);
+
     void on_newOverflow();
 
 private:
     // util methods
     void switchWidgetTo(QWidget* w);
-    void pinRemind(bool* ok, const bool after_error=false);
-    void tryBalance();
+    void pinRemind();
 
     Ui::MainWindow * ui;
     QWidget * current_widget;

@@ -11,7 +11,8 @@
 #include "periodic_tr_subwidgets/step3.h"
 #include "periodic_tr_subwidgets/summary.h"
 #include "../dialogues/transferreceipt.h"
-
+#include "../../logic/networking/connectionmanager.h"
+#include "../../logic/networking/session.h"
 
 namespace Ui {
 class Transfer;
@@ -25,11 +26,13 @@ signals:
     void prevStepCalled();
     void dataReceived(int);
     void cardNumberReceived(QString);
-    //void nameRecieved(QString);
     void sumReceived(int);
-
+    void currentWChanged(int, bool);
     void completeCalled();
     void transferCompleted();
+    void checkReceiverCardCalled(const QString& card);
+    void cardInputSuccess(bool);
+    void checkBalanceCalled(QString);
 
 private slots:
     void on_confirmButton_clicked();
@@ -45,6 +48,12 @@ private slots:
     void performComplete();
     void on_actionCompleted(TransferReceipt *);
 
+    void on_checkReceiverCardFailure();
+    void on_checkReceiverCardSuccess(QString name);
+
+    void on_checkBalanceFailure();
+    void on_checkBalanceSuccess();
+
 public:
     explicit Transfer(QWidget *parent = 0);
     ~Transfer();
@@ -57,6 +66,9 @@ private:
     QString rec_card;
     QString rec_name;
     int sum;
+
+    bool card_ok;
+    bool sum_ok;
 };
 
 #endif // TRANSFER_H

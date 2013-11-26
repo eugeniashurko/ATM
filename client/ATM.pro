@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     client/gui/widgets/servererrorwidget.cpp \
     client/gui/widgets/pinremindwidget.cpp \
     client/gui/widgets/overflowwidget.cpp \
-    client/gui/widgets/newoverflowwidget.cpp
+    client/gui/widgets/newoverflowwidget.cpp \
+    client/gui/dialogues/pinreminddialogue.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -71,7 +72,8 @@ HEADERS  += client/gui/mainwindow.h \
     client/gui/widgets/servererrorwidget.h \
     client/gui/widgets/pinremindwidget.h \
     client/gui/widgets/overflowwidget.h \
-    client/gui/widgets/newoverflowwidget.h
+    client/gui/widgets/newoverflowwidget.h \
+    client/gui/dialogues/pinreminddialogue.h
 
 
 FORMS    += client/gui/mainwindow.ui \
@@ -98,4 +100,5 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/servererrorwidget.ui \
     client/gui/widgets/pinremindwidget.ui \
     client/gui/widgets/overflowwidget.ui \
-    client/gui/widgets/newoverflowwidget.ui
+    client/gui/widgets/newoverflowwidget.ui \
+    client/gui/dialogues/pinreminddialogue.ui
