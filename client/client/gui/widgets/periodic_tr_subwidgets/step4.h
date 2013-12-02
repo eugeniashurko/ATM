@@ -24,6 +24,11 @@ public:
     const QDate getStartDate() const;
     Frequency getFrequency() const;
 
+    void showDateError();
+    void closeDateError();
+    void showFreqError();
+    void closeFreqError();
+
 private:
     Ui::Step4 * ui;
 };

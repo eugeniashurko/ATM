@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     client/logic/networking/session.cpp \
     client/logic/utils/LogFile.cpp \
     client/logic/utils/Validate.cpp \
-    client/logic/utils/Service.cpp
+    client/logic/utils/Service.cpp \
+    client/logic/teller.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -79,7 +80,8 @@ HEADERS  += client/gui/mainwindow.h \
     client/logic/networking/session.h \
     client/logic/utils/LogFile.h \
     client/logic/utils/Validate.h \
-    client/logic/utils/Service.h
+    client/logic/utils/Service.h \
+    client/logic/teller.h
 
 
 FORMS    += client/gui/mainwindow.ui \

@@ -17,6 +17,7 @@ Step3::Step3(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->errorLabel->close();
+    ui->invalidLabel->close();
     connect(this, SIGNAL(input(QString)), this, SLOT(addToAccumulator(QString)));
 }
 
@@ -109,10 +110,21 @@ QString Step3::getAccumulator() const {
 }
 
 void Step3::showError() {
+    ui->invalidLabel->close();
     ui->errorLabel->show();
 }
 
 void Step3::closeError() {
     ui->errorLabel->close();
 }
+
+void Step3::showInvalid() {
+    ui->errorLabel->close();
+    ui->invalidLabel->show();
+}
+
+void Step3::closeInvalid() {
+    ui->invalidLabel->close();
+}
+
 

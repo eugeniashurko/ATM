@@ -12,16 +12,16 @@
 #include "widgets/menuwidget.h"
 #include "widgets/balancewidget.h"
 #include "widgets/withdrawwidget.h"
-#include "widgets/periodictransfer.h"
 #include "widgets/periodic_tr_subwidgets/step3.h"
 #include "widgets/customsuminput.h"
 #include "widgets/transfer.h"
 #include "widgets/supportwidget.h"
 #include "widgets/servererrorwidget.h"
-#include "dialogues/pinreminddialogue.h"
 #include "widgets/pinremindwidget.h"
 #include "widgets/overflowwidget.h"
 #include "widgets/newoverflowwidget.h"
+
+#include "dialogues/pinreminddialogue.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     current_widget(0),
     error(0),
     session(0),
-    connection(new ConnectionManager)
-
+    connection(new ConnectionManager),
+    teller(new Teller("config.json"))
 {
     ui->setupUi(this);
     this->setWindowTitle("ATM");
@@ -55,6 +55,9 @@ MainWindow::~MainWindow()
     delete current_widget;
     current_widget = 0;
 
+    delete teller;
+    teller = 0;
+
     delete ui;
     ui = 0;
 
@@ -73,6 +76,12 @@ void MainWindow::initialize() {
        switchWidgetTo(w);
     }
     return;
+}
+
+void MainWindow::reinitialize(FarewellDialogue * d) {
+    delete d;
+    d = 0;
+    initialize();
 }
 
 void MainWindow::switchWidgetTo(QWidget* w)
@@ -138,18 +147,29 @@ void MainWindow::on_exitButton_clicked()
     return;
 }
 
-void MainWindow::reinitialize(FarewellDialogue * d) {
-    delete d;
-    d = 0;
-    initialize();
-}
-
 void MainWindow::on_toMainMenuButton_clicked()
 {
     callMenu();
     return;
 }
 
+void MainWindow::pinRemind() {
+    PinRemindDialogue * d = new PinRemindDialogue;
+    d->setWindowTitle("PIN Reminder");
+    d->setModal(true);
+    d->show();
+    connect(d,SIGNAL(exitCalled()), this, SLOT(on_exitButton_clicked()));
+    connect(d, SIGNAL(okCalled(QString)),
+            this, SLOT(tryReAuth(QString)));
+    connect(this, SIGNAL(reAuthFialed()), d, SLOT(on_reAuthFailed()));
+
+
+    QEventLoop loop;
+    connect(this, SIGNAL(reAuthSuccess()), &loop, SLOT(quit()));
+    loop.exec();
+    d->close();
+
+}
 
 // Widgets switching
 
@@ -164,7 +184,6 @@ void MainWindow::on_insertClick()
 
 void MainWindow::on_authFromMenu(QString card, QString pin)
 {
-    // ! CARD/PIN validation here !
     try {
         QString token = connection->authRequest(card, pin);
         session = new Session(token, card);
@@ -197,23 +216,8 @@ void MainWindow::tryReAuth(QString pin) {
     }
 }
 
-void MainWindow::pinRemind() {
-    PinRemindDialogue * d = new PinRemindDialogue;
-    d->setWindowTitle("PIN Reminder");
-    d->setModal(true);
-    d->show();
-    connect(d,SIGNAL(exitCalled()), this, SLOT(on_exitButton_clicked()));
-    connect(d, SIGNAL(okCalled(QString)),
-            this, SLOT(tryReAuth(QString)));
-    connect(this, SIGNAL(reAuthFialed()), d, SLOT(on_reAuthFailed()));
 
 
-    QEventLoop loop;
-    connect(this, SIGNAL(reAuthSuccess()), &loop, SLOT(quit()));
-    loop.exec();
-    d->close();
-
-}
 
 void MainWindow::on_balanceFromMenu() {
     try {
@@ -231,14 +235,6 @@ void MainWindow::on_balanceFromMenu() {
         on_balanceFromMenu();
     }
 
-}
-
-
-void MainWindow::on_periodicTrFromMenu() {
-    PeriodicTransfer *w = new PeriodicTransfer;
-    connect(w, SIGNAL(periodicTrCompleted()), this, SLOT(callMenu()));
-    switchWidgetTo(w);
-    return;
 }
 
 
@@ -316,7 +312,7 @@ void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
 
 
 void MainWindow::on_transferFromMenu() {
-    Transfer * w = new Transfer;
+    Transfer * w = new Transfer(session->getCard());
     connect(w, SIGNAL(transferCompleted()), this, SLOT(callMenu()));
     connect(w, SIGNAL(checkReceiverCardCalled(QString)), this, SLOT(on_checkReceiverCard(QString)));
     connect(this, SIGNAL(checkReceiverFailure()), w, SLOT(on_checkReceiverCardFailure()));
@@ -349,6 +345,7 @@ void MainWindow::makeTransfer(QString card, QString name, QString sum) {
             connect(d, SIGNAL(periodicTransferComplete(TransferReceipt *)),
                     this, SLOT(callMenu()));
             d->setWindowTitle("Transfer Receipt");
+            d->setSessionCard(session->getCard());
             d->setName(name);
             d->setCard(card);
             d->setSum(sum.toInt());
@@ -358,7 +355,6 @@ void MainWindow::makeTransfer(QString card, QString name, QString sum) {
             d->show();
         }
         else {
-            qDebug() << "Well, insufficient funds";
             emit insufficientFunds();
         }
     }
@@ -417,6 +413,52 @@ void MainWindow::on_checkBalance(QString sum) {
 }
 
 
+void MainWindow::on_periodicTrFromMenu() {
+    PeriodicTransfer *w = new PeriodicTransfer(session->getCard());
+    connect(w, SIGNAL(checkReceiverCardCalled(QString)), this, SLOT(on_checkReceiverCard(QString)));
+    connect(this, SIGNAL(checkReceiverFailure()), w, SLOT(on_checkReceiverCardFailure()));
+    connect(this, SIGNAL(checkReceiverSuccess(QString)), w, SLOT(on_checkReceiverCardSuccess(QString)));
+
+    connect(w, SIGNAL(checkBalanceCalled(QString)), this, SLOT(on_checkBalance(QString)));
+    connect(this, SIGNAL(checkBalanceFailure()), w, SLOT(on_checkBalanceFailure()));
+    connect(this, SIGNAL(checkBalanceSuccess()), w, SLOT(on_checkBalanceSuccess()));
+
+    connect(w, SIGNAL(periodicTransferPerformCalled(QString,QString,QString, Frequency, QDate)),
+            this, SLOT(makePeriodicTransfer(QString, QString, QString, Frequency, QDate)));
+
+    connect(this, SIGNAL(insufficientFunds()), w, SLOT(on_insufficientFunds()));
+    switchWidgetTo(w);
+    return;
+}
+
+void MainWindow::makePeriodicTransfer(QString card,
+                                      QString name,
+                                      QString sum,
+                                      Frequency freq,
+                                      QDate date)
+{
+    writeLog(session->getCard().toStdString(),
+             QDate::currentDate().toString().toStdString(),
+             "Periodic Transfer : " + card.toStdString() + " : " + date.toString().toStdString(),
+             sum.toStdString(),
+             "OK");
+    TransferReceipt * d = new TransferReceipt;
+    connect(d, SIGNAL(periodicTransferComplete(TransferReceipt *)),
+            this, SLOT(callMenu()));
+    d->setWindowTitle("Periodic Transfer Receipt");
+    d->setSessionCard(session->getCard());
+    d->setName(name);
+    d->setCard(card);
+    d->setSum(sum.toInt());
+    d->setStartDate(date);
+    d->setFrequency(freq);
+    d->setModal(true);
+    d->show();
+    qDebug() << "Here it's performed";
+}
+
+
+
 void MainWindow::on_overflowFromMenu() {
     OverflowWidget * w = new OverflowWidget;
     connect(w, SIGNAL(cleanCalled()), w, SLOT(setEmpty()));
@@ -429,11 +471,28 @@ void MainWindow::on_overflowFromMenu() {
 }
 
 void MainWindow::on_newOverflow(){
-    NewOverflowWidget * w = new NewOverflowWidget;
-    connect(w, SIGNAL(settingsCompleted()), this, SLOT(on_overflowFromMenu()));
+    NewOverflowWidget * w = new NewOverflowWidget(session->getCard());
+
+    connect(w, SIGNAL(settingsCalled(QString,QString,QString)),
+            this, SLOT(setOverflow(QString,QString,QString)));
+    connect(w, SIGNAL(checkReceiverCardCalled(QString)), this, SLOT(on_checkReceiverCard(QString)));
+    connect(this, SIGNAL(checkReceiverFailure()), w, SLOT(on_checkReceiverCardFailure()));
+    connect(this, SIGNAL(checkReceiverSuccess(QString)), w, SLOT(on_checkReceiverCardSuccess(QString)));
+    connect(this, SIGNAL(settingsCompleted()), this, SLOT(on_overflowFromMenu()));
     switchWidgetTo(w);
     return;
 }
+
+void MainWindow::setOverflow(QString card, QString name, QString sum) {
+    writeLog(session->getCard().toStdString(),
+             QDate::currentDate().toString().toStdString(),
+             "Overflow Settings : " + card.toStdString() + " : ",
+             sum.toStdString(),
+             "OK");
+    qDebug() << "Here it's performed";
+    emit settingsCompleted();
+}
+
 
 void MainWindow::on_supportFromMenu() {
     SupportWidget * w = new SupportWidget;

@@ -24,6 +24,8 @@ public:
     const QString getCardNumber();
     void showError();
     void closeError();
+    void showInvalid();
+    void closeInvalid();
 
 private:
     Ui::Step1 * ui;

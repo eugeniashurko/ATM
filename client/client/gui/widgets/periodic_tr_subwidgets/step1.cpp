@@ -16,6 +16,7 @@ Step1::Step1(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->errorLabel->close();
+    ui->invalidLabel->close();
 }
 
 const QString Step1::getCardNumber() {
@@ -25,9 +26,19 @@ const QString Step1::getCardNumber() {
 Step1::~Step1() {  delete ui; }
 
 void Step1::showError() {
+    ui->invalidLabel->close();
     ui->errorLabel->show();
 }
 
 void Step1::closeError() {
     ui->errorLabel->close();
+}
+
+void Step1::showInvalid() {
+    ui->errorLabel->close();
+    ui->invalidLabel->show();
+}
+
+void Step1::closeInvalid() {
+    ui->invalidLabel->close();
 }

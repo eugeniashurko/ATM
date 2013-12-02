@@ -27,6 +27,8 @@ public:
     static const QString confMessage;
     void showError();
     void closeError();
+    void showInvalid();
+    void closeInvalid();
 
 private slots:
     void on_num1Button_clicked();

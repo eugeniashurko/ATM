@@ -36,6 +36,13 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="nameConfLabel">
+      <property name="text">
+       <string>&lt;Name&gt;</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
      <spacer name="verticalSpacer">
       <property name="orientation">
@@ -49,6 +56,13 @@
       </property>
      </spacer>
     </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="3" column="0">
      <widget class="QLabel" name="accountLabel">
       <property name="text">
@@ -56,6 +70,13 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="accountConfLabel">
+      <property name="text">
+       <string>&lt;Account&gt;</string>
       </property>
      </widget>
     </item>
@@ -72,6 +93,19 @@
       </property>
      </spacer>
     </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QLabel" name="errorLabel">
+      <property name="styleSheet">
+       <string notr="true">#errorLabel { color: red; }</string>
+      </property>
+      <property name="text">
+       <string>Insufficient funds!</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
     <item row="6" column="0">
      <widget class="QLabel" name="sumLAbel">
       <property name="text">
@@ -79,6 +113,13 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLabel" name="sumConfLabel">
+      <property name="text">
+       <string>&lt;Sum&gt;</string>
       </property>
      </widget>
     </item>
@@ -95,6 +136,13 @@
       </property>
      </spacer>
     </item>
+    <item row="8" column="0" colspan="2">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="9" column="0">
      <widget class="QLabel" name="freqLabel">
       <property name="text">
@@ -102,6 +150,13 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="1">
+     <widget class="QLabel" name="freqConfLabel">
+      <property name="text">
+       <string>&lt;Frequency&gt;</string>
       </property>
      </widget>
     </item>
@@ -128,65 +183,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="nameConfLabel">
-      <property name="text">
-       <string>&lt;Name&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="accountConfLabel">
-      <property name="text">
-       <string>&lt;Account&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QLabel" name="sumConfLabel">
-      <property name="text">
-       <string>&lt;Sum&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="1">
-     <widget class="QLabel" name="freqConfLabel">
-      <property name="text">
-       <string>&lt;Frequency&gt;</string>
-      </property>
-     </widget>
-    </item>
     <item row="12" column="1">
      <widget class="QLabel" name="startDateConfLabel">
       <property name="text">
        <string>&lt;Start Date&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0" colspan="2">
-     <widget class="QLabel" name="errorLabel">
-      <property name="styleSheet">
-       <string notr="true">#errorLabel { color: red; }</string>
-      </property>
-      <property name="text">
-       <string>Insufficient funds!</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="1">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string/>
       </property>
      </widget>
     </item>

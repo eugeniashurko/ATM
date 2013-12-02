@@ -4,21 +4,22 @@
 
 #include "../dialogues/transferreceipt.h"
 
+#include "../../logic/utils/Validate.h"
 
 PeriodicTransfer::PeriodicTransfer(QString card,
-                                   QString name,
-                                   double su,
-                                   Frequency fr,
-                                   QDate d,
                                    QWidget * parent) :
     QWidget(parent),
     ui(new Ui::PeriodicTransfer),
     stack(new QStackedWidget),
-    rec_card(card),
-    rec_name(name),
-    sum(su),
-    freq(fr),
-    start_date(d)
+    sender_card(card),
+    rec_card(""),
+    rec_name(""),
+    sum(0),
+    freq(week),
+    start_date(QDate::currentDate()),
+    card_ok(false),
+    sum_ok(false),
+    date_ok(false)
 {
     ui->setupUi(this);
     Step1 * s1 = new Step1;
@@ -34,8 +35,6 @@ PeriodicTransfer::PeriodicTransfer(QString card,
     ui->mainLayout->addWidget(stack);
     connect(this, SIGNAL(changeStackedWidgetIndex(int)), stack, SLOT(setCurrentIndex(int)) );
     connect(stack, SIGNAL(currentChanged(int)), this, SLOT(initializeStep(int)));
-    connect(this, SIGNAL(dataReceived(int)), this, SLOT(saveData(int)));
-    connect(this, SIGNAL(completeCalled()), this, SLOT(performComplete()));
     initializeStep(0);
 }
 
@@ -45,8 +44,6 @@ PeriodicTransfer::~PeriodicTransfer()
     delete stack;
 }
 
-
-// ! PUT ALIDATION HERE SOMEHOW !
 void PeriodicTransfer::initializeStep(int prev)
 {
     QString message;
@@ -62,6 +59,8 @@ void PeriodicTransfer::initializeStep(int prev)
             bB = Step1::backButton;
             cM = Step1::confMessage;
             bM = Step1::backMessage;
+            static_cast<Step1 *>(stack->currentWidget())->closeError();
+            static_cast<Step1 *>(stack->currentWidget())->closeInvalid();
         }
         break;
 
@@ -72,11 +71,8 @@ void PeriodicTransfer::initializeStep(int prev)
             bB = Step2::backButton;
             cM = Step2::confMessage;
             bM = Step2::backMessage;
-            Step2 * s2 = dynamic_cast<Step2 *>(stack->currentWidget());
-            s2->setAccount(rec_card);
-            // ! Here we get from database account's owner name !
-            // ! and set it as rec_name
-            s2->setName(rec_name);
+            static_cast<Step2 *>(stack->currentWidget())->setAccount(rec_card);
+            static_cast<Step2 *>(stack->currentWidget())->setName(rec_name);
         }
         break;
 
@@ -87,6 +83,8 @@ void PeriodicTransfer::initializeStep(int prev)
             bB = Step3::backButton;
             cM = Step3::confMessage;
             bM = Step3::backMessage;
+            static_cast<Step3 *>(stack->currentWidget())->closeError();
+            static_cast<Step3 *>(stack->currentWidget())->closeInvalid();
         }
         break;
     case 3:
@@ -96,7 +94,8 @@ void PeriodicTransfer::initializeStep(int prev)
             bB = Step4::backButton;
             cM = Step4::confMessage;
             bM = Step4::backMessage;
-         }
+            static_cast<Step4 *>(stack->currentWidget())->closeDateError();
+        }
         break;
      case 4:
         {
@@ -111,6 +110,7 @@ void PeriodicTransfer::initializeStep(int prev)
             s->setSum(sum);
             s->setStartDate(start_date);
             s->setFrequency(freq);
+            s->closeError();
         }
         break;
      default:
@@ -127,10 +127,30 @@ void PeriodicTransfer::initializeStep(int prev)
 void PeriodicTransfer::on_confirmButton_clicked()
 {
     if (stack->currentIndex() < 4) {
-        emit dataReceived(stack->currentIndex());
-        emit changeStackedWidgetIndex(stack->currentIndex()+1);
+        saveData(stack->currentIndex());
+        switch(stack->currentIndex()) {
+        case 0:
+            if (card_ok) {
+                emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            }
+            break;
+        case 2:
+            if (sum_ok) {
+                emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            }
+            break;
+        case 3:
+            if (date_ok) {
+                emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            }
+            break;
+        default:
+            emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            break;
+        }
     } else {
-        emit completeCalled();
+        emit periodicTransferPerformCalled(rec_card, rec_name, QString::number(sum),
+                                           freq, start_date);
     }
 }
 
@@ -143,25 +163,38 @@ void PeriodicTransfer::saveData(int source) {
     switch(source) {
     case 0:
         {
-            Step1 * s1 = dynamic_cast<Step1 *>(stack->currentWidget());
-            rec_card = s1->getCardNumber();
-            // card number validation
+            QString card = static_cast<Step1 *>(stack->currentWidget())->getCardNumber();
+            if (validLog(card.toStdString()) && (card != sender_card)) {
+                emit checkReceiverCardCalled(card);
+                rec_card = card;
+            } else {
+                static_cast<Step1 *>(stack->currentWidget())->showInvalid();
+            }
         }
         break;
-
     case 2:
         {
-            Step3 * s3 = dynamic_cast<Step3 *>(stack->currentWidget());
-            sum = s3->getAccumulator().toInt();
-            // balance sufficiency validation
+            QString isum = static_cast<Step3 *>(stack->currentWidget())->getAccumulator();
+            if ((isum != "") && (isum.toInt() != 0)) {
+                emit checkBalanceCalled(isum);
+                sum = isum.toInt();
+            } else {
+                static_cast<Step3 *>(stack->currentWidget())->showInvalid();
+            }
         }
         break;
     case 3:
         {
-            Step4 * s4 = dynamic_cast<Step4 *>(stack->currentWidget());
-            start_date = s4->getStartDate();
-            freq = s4->getFrequency();
-            // time validation
+            QDate date = static_cast<Step4 *>(stack->currentWidget())->getStartDate();
+            Frequency f = static_cast<Step4 *>(stack->currentWidget())->getFrequency();
+            if (date >= QDate::currentDate()) {
+                date_ok = true;
+                start_date = date;
+                freq = f;
+            } else {
+                static_cast<Step4 *>(stack->currentWidget())->showDateError();
+            }
+
          }
         break;
      default:
@@ -169,23 +202,24 @@ void PeriodicTransfer::saveData(int source) {
     }
 }
 
-void PeriodicTransfer::performComplete() {
-    TransferReceipt * d = new TransferReceipt;
-    d->setWindowTitle("Periodic Transfer Receipt");
-    d->setName(this->rec_name);
-    d->setCard(this->rec_card);
-    d->setSum(this->sum);
-    d->setStartDate(this->start_date);
-    d->setFrequency(this->freq);
-    d->setModal(true);
-    d->show();
-    connect(d, SIGNAL(periodicTransferComplete(TransferReceipt *)),
-            this, SLOT(on_actionCompleted(TransferReceipt *)));
- }
+void PeriodicTransfer::on_checkReceiverCardFailure() {
+    (static_cast<Step1 *>(stack->currentWidget()))->showError();
+}
 
-void PeriodicTransfer::on_actionCompleted(TransferReceipt * d) {
-    delete d;
-    d = 0;
-    emit periodicTrCompleted();
+void PeriodicTransfer::on_checkReceiverCardSuccess(QString name) {
+    rec_name = name;
+    card_ok = true;
+}
+
+void PeriodicTransfer::on_checkBalanceFailure() {
+    (static_cast<Step3 *>(stack->currentWidget()))->showError();
+}
+
+void PeriodicTransfer::on_checkBalanceSuccess() {
+    sum_ok = true;
+}
+
+void PeriodicTransfer::on_insufficientFunds() {
+    static_cast<Summary *>(stack->currentWidget())->showError();
 }
 

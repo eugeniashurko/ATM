@@ -17,6 +17,8 @@ Step4::Step4(QWidget *parent) :
     ui->comboBox->addItem("Once in a month", QVariant("month"));
     ui->comboBox->addItem("Once in a quarter", QVariant("quarter"));
     ui->comboBox->addItem("Once in a year", QVariant("year"));
+    ui->dateErrorLabel->close();
+    ui->freqErrorLabel->close();
 }
 
 Step4::~Step4() {  delete ui; }
@@ -37,4 +39,21 @@ Frequency Step4::getFrequency() const {
     else if (selected == "year")
         res = year;
     return res;
+}
+
+
+void Step4::showDateError() {
+    ui->dateErrorLabel->show();
+}
+
+void Step4::closeDateError() {
+    ui->dateErrorLabel->close();
+}
+
+void Step4::showFreqError() {
+    ui->freqErrorLabel->show();
+}
+
+void Step4::closeFreqError() {
+    ui->freqErrorLabel->close();
 }

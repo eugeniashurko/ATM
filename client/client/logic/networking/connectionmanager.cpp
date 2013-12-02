@@ -6,8 +6,6 @@
 #include <QSslKey>
 #include <QSslError>
 #include <QSslSocket>
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>

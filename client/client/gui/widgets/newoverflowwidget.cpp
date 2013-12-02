@@ -5,11 +5,19 @@
 #include "periodic_tr_subwidgets/step3.h"
 #include "periodic_tr_subwidgets/summary.h"
 
+#include "../../logic/utils/Validate.h"
 
-NewOverflowWidget::NewOverflowWidget(QWidget *parent) :
+
+NewOverflowWidget::NewOverflowWidget(const QString& c, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::NewOverflowWidget),
-    stack(new QStackedWidget)
+    stack(new QStackedWidget),
+    sender_card(c),
+    _card(""),
+    _name(""),
+    _max_sum(0),
+    card_ok(false),
+    sum_ok(false)
 {
     ui->setupUi(this);
     stack->addWidget(new Step1);
@@ -19,8 +27,6 @@ NewOverflowWidget::NewOverflowWidget(QWidget *parent) :
     ui->mainLayout->addWidget(stack);
     connect(this, SIGNAL(changeStackedWidgetIndex(int)), stack, SLOT(setCurrentIndex(int)) );
     connect(stack, SIGNAL(currentChanged(int)), this, SLOT(initializeStep(int)));
-    connect(this, SIGNAL(dataReceived(int)), this, SLOT(saveData(int)));
-    connect(this, SIGNAL(completeCalled()), this, SLOT(performComplete()));
     initializeStep(0);
 }
 
@@ -45,6 +51,8 @@ void NewOverflowWidget::initializeStep(int prev)
             bB = Step1::backButton;
             cM = Step1::confMessage;
             bM = Step1::backMessage;
+            static_cast<Step1 *>(stack->currentWidget())->closeError();
+            static_cast<Step1 *>(stack->currentWidget())->closeInvalid();
         }
         break;
 
@@ -55,11 +63,8 @@ void NewOverflowWidget::initializeStep(int prev)
             bB = Step2::backButton;
             cM = Step2::confMessage;
             bM = Step2::backMessage;
-            Step2 * s2 = dynamic_cast<Step2 *>(stack->currentWidget());
-            s2->setAccount(_card);
-            // ! Here we get from database account's owner name !
-            // ! and set it as rec_name
-            s2->setName(_name);
+            static_cast<Step2 *>(stack->currentWidget())->setAccount(_card);
+            static_cast<Step2 *>(stack->currentWidget())->setName(_name);
         }
         break;
     case 2:
@@ -69,6 +74,8 @@ void NewOverflowWidget::initializeStep(int prev)
             bB = Step3::backButton;
             cM = Step3::confMessage;
             bM = Step3::backMessage;
+            static_cast<Step3 *>(stack->currentWidget())->closeError();
+            static_cast<Step3 *>(stack->currentWidget())->closeInvalid();
         }
         break;
     case 3:
@@ -99,12 +106,27 @@ void NewOverflowWidget::initializeStep(int prev)
 void NewOverflowWidget::on_confirmButton_clicked()
 {
     if (stack->currentIndex() < 3) {
-        emit dataReceived(stack->currentIndex());
-        emit changeStackedWidgetIndex(stack->currentIndex()+1);
+        saveData(stack->currentIndex());
+        switch(stack->currentIndex()) {
+        case 0:
+            if (card_ok) {
+                emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            }
+            break;
+        case 2:
+            if (sum_ok) {
+                emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            }
+            break;
+        default:
+            emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            break;
+        }
     } else {
-        emit completeCalled();
+        emit settingsCalled(_card, _name, QString::number(_max_sum));
     }
 }
+
 
 void NewOverflowWidget::on_backButton_clicked()
 {
@@ -115,27 +137,40 @@ void NewOverflowWidget::saveData(int source) {
     switch(source) {
     case 0:
         {
-            Step1 * s1 = dynamic_cast<Step1 *>(stack->currentWidget());
-            _card = s1->getCardNumber();
-            // card number validation
+            QString card = static_cast<Step1 *>(stack->currentWidget())->getCardNumber();
+            if (validLog(card.toStdString()) && (card != sender_card)) {
+                emit checkReceiverCardCalled(card);
+                _card = card;
+            } else {
+                static_cast<Step1 *>(stack->currentWidget())->showInvalid();
+            }
         }
         break;
-
+    case 1:
+        break;
     case 2:
         {
-            Step3 * s3 = dynamic_cast<Step3 *>(stack->currentWidget());
-            _max_sum = s3->getAccumulator().toDouble();
-            // balance sufficiency validation
+            QString isum = static_cast<Step3 *>(stack->currentWidget())->getAccumulator();
+            if ((isum != "") && (isum.toInt() != 0)) {
+              _max_sum = isum.toInt();
+              sum_ok = true;
+            } else {
+                static_cast<Step3 *>(stack->currentWidget())->showInvalid();
+            }
         }
-        break;
      default:
         break;
     }
 }
 
-void NewOverflowWidget::performComplete() {
-    emit settingsCompleted();
+
+
+
+void NewOverflowWidget::on_checkReceiverCardFailure() {
+    (static_cast<Step1 *>(stack->currentWidget()))->showError();
 }
 
-
-
+void NewOverflowWidget::on_checkReceiverCardSuccess(QString name) {
+    _name = name;
+    card_ok = true;
+}

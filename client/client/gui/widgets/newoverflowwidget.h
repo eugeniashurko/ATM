@@ -17,11 +17,11 @@ signals:
     void prevStepCalled();
     void dataReceived(int);
     void cardNumberReceived(QString);
-    //void nameRecieved(QString);
     void sumReceived(int);
 
-    void completeCalled();
-    void settingsCompleted();
+    void checkReceiverCardCalled(const QString& card);
+    void cardInputSuccess(bool);
+    void settingsCalled(QString, QString, QString);
 
 private slots:
     void on_confirmButton_clicked();
@@ -34,20 +34,25 @@ private slots:
 
     void saveData(int);
 
-    void performComplete();
+    void on_checkReceiverCardFailure();
+    void on_checkReceiverCardSuccess(QString name);
 
 
 public:
-    explicit NewOverflowWidget(QWidget *parent = 0);
+    explicit NewOverflowWidget(const QString& card, QWidget *parent = 0);
     ~NewOverflowWidget();
 
 private:
     Ui::NewOverflowWidget *ui;
     QStackedWidget * stack;
 
+    QString sender_card;
     QString _card;
     QString _name;
     double _max_sum;
+
+    bool card_ok;
+    bool sum_ok;
 };
 
 #endif // NEWOVERFLOWWIDGET_H

@@ -55,7 +55,7 @@ private slots:
     void on_insufficientFunds();
 
 public:
-    explicit Transfer(QWidget *parent = 0);
+    explicit Transfer(QString card, QWidget *parent = 0);
     ~Transfer();
 
 private:
@@ -63,6 +63,7 @@ private:
     QStackedWidget * stack;
 
     // Attributes of transfer - need to be remembered
+    QString sender_card;
     QString rec_card;
     QString rec_name;
     int sum;

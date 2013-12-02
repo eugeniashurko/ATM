@@ -7,10 +7,12 @@
 #include "../logic/networking/session.h"
 #include "../logic/networking/connectionmanager.h"
 #include "../logic/utils/LogFile.h"
+#include "../logic/teller.h"
+
 #include "dialogues/servererror.h"
 #include "dialogues/farewelldialogue.h"
 #include "widgets/withdrawresultok.h"
-
+#include "widgets/periodictransfer.h"
 
 
 namespace Ui {
@@ -28,6 +30,7 @@ signals:
     void checkBalanceSuccess();
     void checkBalanceFailure();
     void insufficientFunds();
+    void settingsCompleted();
 
 public:
 
@@ -67,7 +70,12 @@ private slots:
     void on_checkBalance(QString sum);
     void makeTransfer(QString, QString, QString);
 
+    // periodic tarnsfer util-methods
+    void makePeriodicTransfer(QString, QString, QString, Frequency, QDate);
+
+
     void on_newOverflow();
+    void setOverflow(QString, QString, QString);
 
 private:
     // util methods
@@ -79,6 +87,7 @@ private:
     ServerError * error;
     Session * session;
     ConnectionManager * connection;
+    Teller * teller;
 };
 
 #endif // MAINWINDOW_H

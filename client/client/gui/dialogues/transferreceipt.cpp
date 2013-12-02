@@ -20,7 +20,9 @@ void TransferReceipt::on_farewellOkButton_clicked()
     emit periodicTransferComplete(this);
 }
 
-
+void TransferReceipt::setSessionCard(QString card) {
+    ui->cardLabel->setText(card);
+}
 
 void TransferReceipt::setName(QString name) {
     ui->nameConfLabel->setText(name);

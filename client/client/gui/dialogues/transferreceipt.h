@@ -20,6 +20,7 @@ signals:
 public:
     explicit TransferReceipt(QWidget *parent = 0);
     ~TransferReceipt();
+    void setSessionCard(QString card);
     void setName(QString name);
     void setCard(QString card);
     void setSum(int sum);

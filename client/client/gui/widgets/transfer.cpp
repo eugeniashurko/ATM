@@ -1,10 +1,13 @@
 #include "transfer.h"
 #include "ui_transfer.h"
+#include "../../logic/utils/Validate.h"
 
-Transfer::Transfer(QWidget *parent) :
+
+Transfer::Transfer(QString card, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Transfer),
     stack(new QStackedWidget),
+    sender_card(card),
     rec_card(""),
     rec_name(""),
     sum(0),
@@ -23,8 +26,6 @@ Transfer::Transfer(QWidget *parent) :
     ui->mainLayout->addWidget(stack);
     connect(this, SIGNAL(changeStackedWidgetIndex(int)), stack, SLOT(setCurrentIndex(int)) );
     connect(stack, SIGNAL(currentChanged(int)), this, SLOT(initializeStep(int)));
-    connect(this, SIGNAL(dataReceived(int)),
-            this, SLOT(saveData(int)));
     initializeStep(0);
 }
 
@@ -52,6 +53,7 @@ void Transfer::initializeStep(int prev)
             cM = Step1::confMessage;
             bM = Step1::backMessage;
             static_cast<Step1 *>(stack->currentWidget())->closeError();
+            static_cast<Step1 *>(stack->currentWidget())->closeInvalid();
         }
         break;
 
@@ -75,6 +77,7 @@ void Transfer::initializeStep(int prev)
             cM = Step3::confMessage;
             bM = Step3::backMessage;
             static_cast<Step3 *>(stack->currentWidget())->closeError();
+            static_cast<Step3 *>(stack->currentWidget())->closeInvalid();
         }
         break;
     case 3:
@@ -105,13 +108,22 @@ void Transfer::initializeStep(int prev)
 
 void Transfer::on_confirmButton_clicked()
 {
-
     if (stack->currentIndex() < 3) {
         saveData(stack->currentIndex());
-        if ((stack->currentIndex() != 0) || (card_ok)) {
-            if ((stack->currentIndex() != 2) || (sum_ok)) {
+        switch(stack->currentIndex()) {
+        case 0:
+            if (card_ok) {
                 emit changeStackedWidgetIndex(stack->currentIndex()+1);
             }
+            break;
+        case 2:
+            if (sum_ok) {
+                emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            }
+            break;
+        default:
+            emit changeStackedWidgetIndex(stack->currentIndex()+1);
+            break;
         }
     } else {
         emit transferPerformCalled(rec_card, rec_name, QString::number(sum));
@@ -127,19 +139,26 @@ void Transfer::saveData(int source) {
     switch(source) {
     case 0:
         {
-            Step1 * s1 = dynamic_cast<Step1 *>(stack->currentWidget());
-            emit checkReceiverCardCalled(s1->getCardNumber());
-            rec_card = s1->getCardNumber();
-            // card number validation
+            QString card = static_cast<Step1 *>(stack->currentWidget())->getCardNumber();
+            if (validLog(card.toStdString()) && (card != sender_card)) {
+                emit checkReceiverCardCalled(card);
+                rec_card = card;
+            } else {
+                static_cast<Step1 *>(stack->currentWidget())->showInvalid();
+            }
         }
         break;
     case 1:
         break;
     case 2:
         {
-            Step3 * s3 = dynamic_cast<Step3 *>(stack->currentWidget());
-            emit checkBalanceCalled(s3->getAccumulator());
-            sum = s3->getAccumulator().toInt();
+            QString isum = static_cast<Step3 *>(stack->currentWidget())->getAccumulator();
+            if ((isum != "") && (isum.toInt() != 0)) {
+                emit checkBalanceCalled(isum);
+              sum = isum.toInt();
+            } else {
+                static_cast<Step3 *>(stack->currentWidget())->showInvalid();
+            }
         }
         break;
      case 3:
