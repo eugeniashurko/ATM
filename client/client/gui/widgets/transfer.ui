@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
-    <height>431</height>
+    <width>630</width>
+    <height>435</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>10</y>
      <width>531</width>
      <height>41</height>
@@ -35,7 +35,7 @@
   <widget class="QPushButton" name="confirmButton">
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>430</x>
      <y>360</y>
      <width>171</width>
      <height>61</height>
@@ -48,7 +48,7 @@
   <widget class="QWidget" name="verticalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>410</x>
      <y>320</y>
      <width>191</width>
      <height>41</height>
@@ -70,9 +70,9 @@
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>50</y>
-     <width>571</width>
+     <width>581</width>
      <height>271</height>
     </rect>
    </property>
@@ -81,7 +81,7 @@
   <widget class="QPushButton" name="backButton">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>360</y>
      <width>171</width>
      <height>61</height>
@@ -94,7 +94,7 @@
   <widget class="QWidget" name="verticalLayoutWidget_4">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>320</y>
      <width>181</width>
      <height>41</height>

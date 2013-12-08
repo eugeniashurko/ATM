@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     session(0),
     connection(new ConnectionManager),
     teller(new Teller("config.json"))
-{
+{    
     ui->setupUi(this);
     this->setWindowTitle("ATM");
     initialize();
@@ -263,8 +263,8 @@ void MainWindow::on_sumProvided(int sum) {
     // ! Balance sufficiency validation here !
     WithdrawResultOk * w = new WithdrawResultOk;
     connect(w, SIGNAL(backToSumInput()), this, SLOT(on_withdrawFromMenu()));
-    connect(w, SIGNAL(withdraw(const double, WithdrawResultOk *)),
-            this, SLOT(makeWithdrawal(const double, WithdrawResultOk *)));
+    connect(w, SIGNAL(withdraw(const int, WithdrawResultOk *)),
+            this, SLOT(makeWithdrawal(const int, WithdrawResultOk *)));
     w->setSum(sum);
     switchWidgetTo(w);
     qDebug() << sum;
@@ -273,7 +273,7 @@ void MainWindow::on_sumProvided(int sum) {
 
 // SLOT Invokes when customer confirms withdrawal summary
 // actually makes server request and validates all data
-void MainWindow::makeWithdrawal(const double sum, WithdrawResultOk * widget) {
+void MainWindow::makeWithdrawal(const int sum, WithdrawResultOk * widget) {
     try {
         bool success = connection->withdrawalRequest(session->getToken(), sum);
         if (success) {
@@ -438,7 +438,7 @@ void MainWindow::makePeriodicTransfer(QString card,
                                       QDate date)
 {
     writeLog(session->getCard().toStdString(),
-             QDate::currentDate().toString().toStdString(),
+             QDateTime::currentDateTimeUtc().toString().toStdString(),
              "Periodic Transfer : " + card.toStdString() + " : " + date.toString().toStdString(),
              sum.toStdString(),
              "OK");
@@ -485,7 +485,7 @@ void MainWindow::on_newOverflow(){
 
 void MainWindow::setOverflow(QString card, QString name, QString sum) {
     writeLog(session->getCard().toStdString(),
-             QDate::currentDate().toString().toStdString(),
+              QDateTime::currentDateTimeUtc().toString().toStdString(),
              "Overflow Settings : " + card.toStdString() + " : ",
              sum.toStdString(),
              "OK");

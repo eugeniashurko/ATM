@@ -3,11 +3,13 @@
 #include <QDebug>
 #include <QJsonParseError>
 #include <QJsonObject>
-
+#include <iostream>
 #include "teller.h"
 
+using namespace std;
 
-Teller::Teller(const QString& file_name) {
+
+Teller::Teller(const QString& file_name): combo(0, 0, 0, 0, 0) {
     QFile conf_file(file_name.toStdString().c_str());
     if( ! conf_file.open( QIODevice::ReadOnly ))
     {
@@ -30,11 +32,12 @@ Teller::Teller(const QString& file_name) {
     } else if (doc.isObject()) {
         QJsonObject jObject = doc.object();
         QVariantMap result = doc.toVariant().toMap();
-        _20 = result["20"].toInt();
-        _50 = result["50"].toInt();
-        _100 = result["100"].toInt();
-        _200 = result["200"].toInt();
-        _500 = result["500"].toInt();
+        combo = BanknoteCombination(result["20"].toInt(), result["50"].toInt(), result["100"].toInt(),
+                result["200"].toInt(), result["500"].toInt());
     }
     return;
+}
+
+const BanknoteCombination& Teller::withdraw(const int sum) {
+    // TODO code here
 }

@@ -63,7 +63,7 @@ private slots:
     // withdrawal util-methods
     void on_sumProvided(int);
     void customSumInput();
-    void makeWithdrawal(const double, WithdrawResultOk * widget);
+    void makeWithdrawal(const int, WithdrawResultOk * widget);
 
     // transfer util-methods
     void on_checkReceiverCard(QString card);

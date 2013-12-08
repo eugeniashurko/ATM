@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
-    <height>433</height>
+    <width>632</width>
+    <height>410</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>20</y>
+     <x>140</x>
+     <y>40</y>
      <width>291</width>
      <height>31</height>
     </rect>
@@ -32,8 +32,8 @@
   <widget class="QLabel" name="sumLabel">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>110</y>
+     <x>180</x>
+     <y>140</y>
      <width>241</width>
      <height>51</height>
     </rect>
@@ -57,10 +57,10 @@
   <widget class="QPushButton" name="withdrawButton">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>200</y>
-     <width>101</width>
-     <height>41</height>
+     <x>420</x>
+     <y>300</y>
+     <width>151</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
@@ -70,10 +70,10 @@
   <widget class="QPushButton" name="backButton">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>200</y>
-     <width>101</width>
-     <height>41</height>
+     <x>50</x>
+     <y>300</y>
+     <width>151</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
@@ -83,8 +83,8 @@
   <widget class="QWidget" name="error1Widget" native="true">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>50</y>
+     <x>150</x>
+     <y>60</y>
      <width>301</width>
      <height>61</height>
     </rect>
@@ -131,7 +131,7 @@
   <widget class="QWidget" name="error2Widget" native="true">
    <property name="geometry">
     <rect>
-     <x>60</x>
+     <x>150</x>
      <y>60</y>
      <width>301</width>
      <height>61</height>

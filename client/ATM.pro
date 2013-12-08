@@ -47,7 +47,9 @@ SOURCES += main.cpp\
     client/logic/utils/LogFile.cpp \
     client/logic/utils/Validate.cpp \
     client/logic/utils/Service.cpp \
-    client/logic/teller.cpp
+    client/logic/teller.cpp \
+    client/logic/Notes.cpp \
+    client/logic/banknotecombination.cpp
 
 
 HEADERS  += client/gui/mainwindow.h \
@@ -81,7 +83,9 @@ HEADERS  += client/gui/mainwindow.h \
     client/logic/utils/LogFile.h \
     client/logic/utils/Validate.h \
     client/logic/utils/Service.h \
-    client/logic/teller.h
+    client/logic/teller.h \
+    client/logic/Notes.h \
+    client/logic/banknotecombination.h
 
 
 FORMS    += client/gui/mainwindow.ui \
@@ -97,9 +101,9 @@ FORMS    += client/gui/mainwindow.ui \
     client/gui/widgets/periodic_tr_subwidgets/step3.ui \
     client/gui/widgets/periodic_tr_subwidgets/step4.ui \
     client/gui/widgets/periodic_tr_subwidgets/summary.ui \
+    client/gui/widgets/customsuminput.ui \
     client/gui/dialogues/withdrawalreceipt.ui \
     client/gui/widgets/step.ui \
-    client/gui/widgets/customsuminput.ui \
     client/gui/widgets/withdrawresultok.ui \
     client/gui/widgets/transfer.ui \
     client/gui/widgets/supportwidget.ui \

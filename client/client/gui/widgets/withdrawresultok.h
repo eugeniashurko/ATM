@@ -15,13 +15,13 @@ class WithdrawResultOk : public QWidget
 
 signals:
     void backToSumInput();
-    void withdraw(const double,  WithdrawResultOk * widget);
+    void withdraw(const int,  WithdrawResultOk * widget);
 
 public:
     explicit WithdrawResultOk(QWidget *parent = 0);
     ~WithdrawResultOk();
     int getSum() const { return _sum; }
-    void setSum(const double sum);
+    void setSum(const int sum);
     void showError(const int code);
 
 private slots:
@@ -30,7 +30,7 @@ private slots:
 
 private:
     Ui::WithdrawResultOk *ui;
-    double _sum;
+    int _sum;
 };
 
 #endif // WITHDRAWRESULTOK_H

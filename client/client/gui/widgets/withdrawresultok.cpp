@@ -15,7 +15,7 @@ WithdrawResultOk::~WithdrawResultOk()
     delete ui;
 }
 
-void WithdrawResultOk::setSum(const double sum) {
+void WithdrawResultOk::setSum(const int sum) {
     _sum = sum;
     ui->sumLabel->setText(QString::number(sum)+" UAH");
 }
