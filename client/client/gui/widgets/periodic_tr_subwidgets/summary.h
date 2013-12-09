@@ -32,6 +32,8 @@ public:
     void removeFrequency();
     void showError();
     void closeError();
+    void showOverflowError();
+    void closeOverflowError();
 
 private:
     Ui::Summary * ui;

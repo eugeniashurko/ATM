@@ -8,6 +8,7 @@
 #include <QNetworkReply>
 #include <list>
 
+
 class ConnectionManager : public QObject
 {
     Q_OBJECT
@@ -45,6 +46,13 @@ public:
         ~NotExist() {}
     };
 
+    // Sum provided less than balance
+    class OverflowFailure {
+    public:
+        OverflowFailure() {}
+        ~OverflowFailure() {}
+    };
+
     explicit ConnectionManager(QObject *parent = 0);
     ~ConnectionManager();
 
@@ -76,6 +84,10 @@ public:
     const QString nameRequest(const QString& token, const QString& card);
 
     bool transferRequest(const QString& token, const QString& rec_card, const QString& sum);
+
+    bool setOverflow(const QString& token, const QString& sum, const QString& suppl);
+    std::pair<QString, QString> getOverflow(const QString& token);
+    bool cleanOverflow(const QString& token);
 
 private:
     QNetworkAccessManager * manager;

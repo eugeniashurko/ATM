@@ -2,6 +2,7 @@
 #include <QAction>
 #include <QDebug>
 #include <iostream>
+#include <sstream>
 #include <list>
 
 #include "mainwindow.h"
@@ -265,6 +266,7 @@ void MainWindow::on_sumProvided(int sum) {
     connect(w, SIGNAL(backToSumInput()), this, SLOT(on_withdrawFromMenu()));
     connect(w, SIGNAL(withdraw(const int, WithdrawResultOk *)),
             this, SLOT(makeWithdrawal(const int, WithdrawResultOk *)));
+    connect(this, SIGNAL(SumWasInvalid()), w, SLOT(showError()));
     w->setSum(sum);
     switchWidgetTo(w);
     qDebug() << sum;
@@ -275,6 +277,7 @@ void MainWindow::on_sumProvided(int sum) {
 // actually makes server request and validates all data
 void MainWindow::makeWithdrawal(const int sum, WithdrawResultOk * widget) {
     try {
+        BanknoteCombination res = teller->withdraw(sum);
         bool success = connection->withdrawalRequest(session->getToken(), sum);
         if (success) {
             writeLog((session->getCard()).toStdString(),
@@ -289,11 +292,15 @@ void MainWindow::makeWithdrawal(const int sum, WithdrawResultOk * widget) {
             d->setCard(session->getCard());
             d->setWindowTitle("Withdrawal Receipt");
             d->setModal(true);
+            d->setBankNotes(res);
             d->show();
         }
         else {
             widget->showError(2);
         }
+    }
+    catch (Teller::InvalidSumException) {
+        emit SumWasInvalid();
     }
     catch (ConnectionManager::TokenExpired) {
         pinRemind();
@@ -460,15 +467,52 @@ void MainWindow::makePeriodicTransfer(QString card,
 
 
 void MainWindow::on_overflowFromMenu() {
-    OverflowWidget * w = new OverflowWidget;
-    connect(w, SIGNAL(cleanCalled()), w, SLOT(setEmpty()));
-//    connect(w, SIGNAL(cleanCalled()), this, SLOT(on_cleanOverflowSetting()));
-    connect(w, SIGNAL(newOverflowCalled()), this, SLOT(on_newOverflow()));
-    // here make request with info and call SetFilled or SetEmpty
-    w->setFilled("111111111111", "Tomas Mann", 300);
-    switchWidgetTo(w);
-    return;
+    try {
+        OverflowWidget * w = new OverflowWidget;
+        QString max_sum = connection->getOverflow(session->getToken()).first;
+        QString suppl = connection->getOverflow(session->getToken()).second;
+        QString name = "";
+        if (suppl != "")
+            name = connection->nameRequest(session->getToken(), suppl);
+        connect(w, SIGNAL(cleanCalled()), this, SLOT(on_cleanOverflowSetting()));
+        connect(this, SIGNAL(cleanOverflowSuccessfull()), w, SLOT(setEmpty()));
+        connect(w, SIGNAL(newOverflowCalled()), this, SLOT(on_newOverflow()));
+        // here make request with info and call SetFilled or SetEmpty
+        if ((suppl != "")&&(name != "")&&(max_sum != ""))
+            w->setFilled(suppl, name, max_sum.toDouble());
+        else
+            w->setEmpty();
+        switchWidgetTo(w);
+        return;
+
+    } catch (ConnectionManager::NotExist) {
+        qDebug() << "Card does not exist";
+    }
+    catch (ConnectionManager::TokenExpired) {
+        pinRemind();
+        on_overflowFromMenu();
+
+    } catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
 }
+
+
+void MainWindow::on_cleanOverflowSetting() {
+    try {
+        bool res = connection->cleanOverflow(session->getToken());
+        if (res) {
+            emit cleanOverflowSuccessfull();
+        }
+    } catch (ConnectionManager::TokenExpired) {
+        pinRemind();
+        on_overflowFromMenu();
+
+    } catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    }
+}
+
 
 void MainWindow::on_newOverflow(){
     NewOverflowWidget * w = new NewOverflowWidget(session->getCard());
@@ -479,18 +523,33 @@ void MainWindow::on_newOverflow(){
     connect(this, SIGNAL(checkReceiverFailure()), w, SLOT(on_checkReceiverCardFailure()));
     connect(this, SIGNAL(checkReceiverSuccess(QString)), w, SLOT(on_checkReceiverCardSuccess(QString)));
     connect(this, SIGNAL(settingsCompleted()), this, SLOT(on_overflowFromMenu()));
+    connect(this, SIGNAL(overflowFailure()), w, SLOT(on_overflowFailure()));
     switchWidgetTo(w);
     return;
 }
 
 void MainWindow::setOverflow(QString card, QString name, QString sum) {
-    writeLog(session->getCard().toStdString(),
-              QDateTime::currentDateTimeUtc().toString().toStdString(),
-             "Overflow Settings : " + card.toStdString() + " : ",
-             sum.toStdString(),
-             "OK");
-    qDebug() << "Here it's performed";
-    emit settingsCompleted();
+    try {
+        bool res = connection->setOverflow(session->getToken(),
+                                           sum,
+                                           card);
+        if (res) {
+            writeLog(session->getCard().toStdString(),
+                      QDateTime::currentDateTimeUtc().toString().toStdString(),
+                     "Overflow Settings : " + card.toStdString() + " : ",
+                     sum.toStdString(),
+                     "OK");
+
+            emit settingsCompleted();
+        }
+    } catch (ConnectionManager::TokenExpired) {
+        pinRemind();
+        setOverflow(card, name, sum);
+    } catch (ConnectionManager::BadConnection) {
+        invokeServerError();
+    } catch (ConnectionManager::OverflowFailure) {
+        emit overflowFailure();
+    }
 }
 
 

@@ -14,9 +14,9 @@ Summary::Summary(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Summary)
 {
-
     ui->setupUi(this);
     ui->errorLabel->close();
+    ui->overflowError->close();
 }
 
 Summary::~Summary() { delete ui;  }
@@ -74,5 +74,13 @@ void Summary::showError() {
 
 void Summary::closeError() {
     ui->errorLabel->close();
+}
+
+void Summary::showOverflowError() {
+    ui->overflowError->show();
+}
+
+void Summary::closeOverflowError() {
+    ui->overflowError->close();
 }
 

@@ -15,6 +15,7 @@
 #include "widgets/periodictransfer.h"
 
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,6 +32,9 @@ signals:
     void checkBalanceFailure();
     void insufficientFunds();
     void settingsCompleted();
+    void cleanOverflowSuccessfull();
+    void SumWasInvalid();
+    void overflowFailure();
 
 public:
 
@@ -73,7 +77,7 @@ private slots:
     // periodic tarnsfer util-methods
     void makePeriodicTransfer(QString, QString, QString, Frequency, QDate);
 
-
+    void on_cleanOverflowSetting();
     void on_newOverflow();
     void setOverflow(QString, QString, QString);
 

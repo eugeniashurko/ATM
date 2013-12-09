@@ -53,6 +53,9 @@
    <property name="echoMode">
     <enum>QLineEdit::Password</enum>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="cardNumberLabel">
    <property name="geometry">
@@ -116,6 +119,9 @@
    </property>
    <property name="maxLength">
     <number>16</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="errorLabel">

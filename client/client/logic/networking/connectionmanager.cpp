@@ -165,47 +165,37 @@ QString ConnectionManager::authRequest(QString card, QString PIN) {
                reply,
                SLOT(ignoreSslErrors()));
        loop.exec();
-
        // processing the reply
        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-       if (reply->error() == QNetworkReply::NoError) {
-           if (statusCode == 200) {
+       if (statusCode == 200) {
+           // Reply of success so we
+           // parse the JSON RespstatusCodeonse here to take token
+           QByteArray reply_body = reply->readAll();
+           QJsonParseError * err = new QJsonParseError;
+           QJsonDocument doc = QJsonDocument::fromJson(reply_body, err);
 
-               // Reply of success so we
-               // parse the JSON RespstatusCodeonse here to take token
-               QByteArray reply_body = reply->readAll();
-               QJsonParseError * err = new QJsonParseError;
-               QJsonDocument doc = QJsonDocument::fromJson(reply_body, err);
-
-               if (err->error != 0) {
-                   qDebug() << err->errorString();
-               }
-
-               if (doc.isNull()) {
-                   qDebug() << "Invalid JSON-document 'config.json'";
-               } else if (doc.isObject()) {
-                   QVariantMap result = doc.toVariant().toMap();
-                   token = result["token"].toString();
-               }
-               delete err;
-
+           if (err->error != 0) {
+               qDebug() << err->errorString();
            }
-           else if (statusCode == 401) {
 
-               // if no such account in database
-               throw AuthFailed();
-
+           if (doc.isNull()) {
+               qDebug() << "Invalid JSON-document 'config.json'";
+           } else if (doc.isObject()) {
+               QVariantMap result = doc.toVariant().toMap();
+               token = result["token"].toString();
            }
-           else {
+           delete err;
 
-               qDebug() << statusCode;
-               throw BadConnection();
+       }
+       else if (statusCode == 401) {
 
-           }
+           // if no such account in database
+           throw AuthFailed();
+
        }
        else {
 
-           qDebug() << reply->errorString();
+           qDebug() << statusCode;
            throw BadConnection();
 
        }
@@ -465,6 +455,196 @@ bool ConnectionManager::transferRequest(const QString& token, const QString& rec
             } else if (statusCode == 401) {
 
                 qDebug() << "Token expired";
+                throw TokenExpired();
+
+            // - if Forbidden - insufficient funds
+            } else if (statusCode == 403) {
+            // - some other connection errors
+                qDebug() << statusCode;
+             }
+            else  {
+
+                qDebug() << statusCode;
+                throw BadConnection();
+
+            }
+        delete reply;
+        delete u;
+        delete req;
+    }
+    return success;
+}
+
+
+bool ConnectionManager::setOverflow(const QString& token, const QString& sum, const QString& suppl) {
+    bool success = false;
+
+    if (manager->networkAccessible()) {
+        // request initialization
+        QNetworkRequest * req = new QNetworkRequest();
+        req->setSslConfiguration(*config);
+        // - we set url to have token as query
+        QUrl * u = new QUrl("https://" + HOST + ":" + PORT + OVERFLOW_URL);
+        QUrlQuery q;
+        q.addQueryItem("token", token);
+        u->setQuery(q);
+        req->setUrl(*u);
+        req->setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+        // form the body of http request
+        QVariant card(suppl), vsum(sum);
+        QJsonObject json;
+        json.insert("recepient", card.toString());
+        json.insert("threshold", vsum.toDouble());
+        QJsonDocument doc(json);
+
+        QNetworkReply * reply = manager->post(*req, doc.toJson());
+
+        // here we wait until reply is finished
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(manager,
+                SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )),
+                reply,
+                SLOT(ignoreSslErrors()));
+        loop.exec();
+        // processing the reply
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (statusCode == 200) {
+            success = true;
+            // - if Unauthorized - token expired
+            } else if (statusCode == 401) {
+
+                qDebug() << "Token expired";
+                throw TokenExpired();
+
+            // - if Forbidden - insufficient funds
+            } else if (statusCode == 403) {
+                qDebug() << statusCode;
+                throw OverflowFailure();
+            }
+            else if (statusCode == 400) {
+                qDebug() << statusCode;
+                throw OverflowFailure();
+            }
+            // - some other connection errors
+            else  {
+
+                qDebug() << statusCode;
+                throw BadConnection();
+
+            }
+        delete reply;
+        delete u;
+        delete req;
+    }
+    return success;
+}
+
+
+std::pair<QString, QString> ConnectionManager::getOverflow(const QString& token) {
+    QString max_sum = "";
+    QString suppl = "";
+    if (manager->networkAccessible()) {
+        // request initialization
+        QNetworkRequest * req = new QNetworkRequest();
+        req->setSslConfiguration(*config);
+        // - we set url to have token as query
+        QUrl * u = new QUrl("https://" + HOST + ":" + PORT + OVERFLOW_URL);
+        QUrlQuery q;
+        q.addQueryItem("token", token);
+        u->setQuery(q);
+        req->setUrl(*u);
+        req->setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+        QNetworkReply* reply = manager->get(*req);
+
+        // here we wait until reply is finished
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(manager,
+                SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )),
+                reply,
+                SLOT(ignoreSslErrors()));
+        loop.exec();
+        // processing the reply
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        if (statusCode == 200) {
+                // Reply of success so we
+                // parse the JSON RespstatusCodeonse here to take token
+                QByteArray reply_body = reply->readAll();
+                QJsonParseError * err = new QJsonParseError;
+                QJsonDocument doc = QJsonDocument::fromJson(reply_body, err);
+
+                if (err->error != 0) {
+                    qDebug() << err->errorString();
+                }
+
+                if (doc.isNull()) {
+                    qDebug() << "Invalid JSON-document 'config.json'";
+                } else if (doc.isObject()) {
+                    QVariantMap result = doc.toVariant().toMap();
+                    max_sum = result["threshold"].toString();
+                    suppl = result["recepient"].toString();
+                }
+                delete err;
+
+            } else if (statusCode == 401) {
+
+                qDebug() << "Token expired";
+                throw TokenExpired();
+
+            } else {
+
+                qDebug() << statusCode;
+                throw BadConnection();
+
+            }
+        delete reply;
+        delete u;
+        delete req;
+    }
+    std::pair<QString, QString> res;
+    res.first = max_sum;
+    res.second = suppl;
+    return res;
+}
+
+
+bool ConnectionManager::cleanOverflow(const QString& token) {
+    bool success = false;
+
+    if (manager->networkAccessible()) {
+        // request initialization
+        QNetworkRequest * req = new QNetworkRequest();
+        req->setSslConfiguration(*config);
+        // - we set url to have token as query
+        QUrl * u = new QUrl("https://" + HOST + ":" + PORT + OVERFLOW_URL);
+        QUrlQuery q;
+        q.addQueryItem("token", token);
+        u->setQuery(q);
+        req->setUrl(*u);
+        req->setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+        QNetworkReply * reply = manager->deleteResource(*req);
+
+        // here we wait until reply is finished
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(manager,
+                SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )),
+                reply,
+                SLOT(ignoreSslErrors()));
+        loop.exec();
+        // processing the reply
+        int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+        if (statusCode == 200) {
+            success = true;
+            // - if Unauthorized - token expired
+            } else if (statusCode == 401) {
+
                 throw TokenExpired();
 
             // - if Forbidden - insufficient funds

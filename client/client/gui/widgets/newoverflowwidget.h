@@ -37,6 +37,8 @@ private slots:
     void on_checkReceiverCardFailure();
     void on_checkReceiverCardSuccess(QString name);
 
+public slots:
+    void on_overflowFailure();
 
 public:
     explicit NewOverflowWidget(const QString& card, QWidget *parent = 0);
@@ -53,6 +55,7 @@ private:
 
     bool card_ok;
     bool sum_ok;
+    bool sum_nice;
 };
 
 #endif // NEWOVERFLOWWIDGET_H

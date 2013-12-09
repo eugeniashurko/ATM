@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "../../logic/banknotecombination.h"
+
 namespace Ui {
 class WithdrawalReceipt;
 }
@@ -18,6 +20,7 @@ public:
     ~WithdrawalReceipt();
     void setCard(QString c);
     void setSum(const int c);
+    void setBankNotes(const BanknoteCombination&);
 
 private slots:
     void on_farewellOkButton_clicked();

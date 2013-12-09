@@ -18,7 +18,7 @@ signals:
 
 public slots:
     void setEmpty();
-    void setFilled(QString card, QString name, double max_sum);
+    void setFilled(QString card, QString name, int max_sum);
 
 public:
     explicit OverflowWidget(QWidget *parent = 0);

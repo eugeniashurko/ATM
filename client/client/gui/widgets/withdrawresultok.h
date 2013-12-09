@@ -22,7 +22,6 @@ public:
     ~WithdrawResultOk();
     int getSum() const { return _sum; }
     void setSum(const int sum);
-    void showError(const int code);
 
 private slots:
     void on_backButton_clicked();
@@ -31,6 +30,9 @@ private slots:
 private:
     Ui::WithdrawResultOk *ui;
     int _sum;
+
+public slots:
+    void showError(const int code=1);
 };
 
 #endif // WITHDRAWRESULTOK_H

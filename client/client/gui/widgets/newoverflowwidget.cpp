@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "newoverflowwidget.h"
 #include "ui_newoverflowwidget.h"
 #include "periodic_tr_subwidgets/step1.h"
@@ -17,7 +19,8 @@ NewOverflowWidget::NewOverflowWidget(const QString& c, QWidget *parent) :
     _name(""),
     _max_sum(0),
     card_ok(false),
-    sum_ok(false)
+    sum_ok(false),
+    sum_nice(true)
 {
     ui->setupUi(this);
     stack->addWidget(new Step1);
@@ -80,17 +83,20 @@ void NewOverflowWidget::initializeStep(int prev)
         break;
     case 3:
         {
+            sum_nice = true;
             message = Summary::stepMessage;
             cB = Summary::confButton;
             bB = Summary::backButton;
             cM = Summary::confMessage;
             bM = Summary::backMessage;
-            Summary * s = dynamic_cast<Summary *>(stack->currentWidget());
+            Summary * s = static_cast<Summary *>(stack->currentWidget());
             s->setCardNumber(_card);
             s->setName(_name);
             s->setSum(_max_sum);
             s->removeStartDate();
             s->removeFrequency();
+            s->closeOverflowError();
+            s->closeError();
         }
         break;
      default:
@@ -123,7 +129,9 @@ void NewOverflowWidget::on_confirmButton_clicked()
             break;
         }
     } else {
-        emit settingsCalled(_card, _name, QString::number(_max_sum));
+        if (sum_nice) {
+            emit settingsCalled(_card, _name, QString::number(_max_sum));
+        }
     }
 }
 
@@ -173,4 +181,9 @@ void NewOverflowWidget::on_checkReceiverCardFailure() {
 void NewOverflowWidget::on_checkReceiverCardSuccess(QString name) {
     _name = name;
     card_ok = true;
+}
+
+void NewOverflowWidget::on_overflowFailure() {
+    static_cast<Summary *>(stack->currentWidget())->showOverflowError();
+    sum_nice = false;
 }

@@ -20,7 +20,7 @@ void OverflowWidget::setEmpty() {
     ui->cleanButton->setEnabled(false);
 }
 
-void OverflowWidget::setFilled(QString card, QString name, double max_sum) {
+void OverflowWidget::setFilled(QString card, QString name, int max_sum) {
     if (!ui->cleanButton->isEnabled()) {
         ui->cleanButton->setEnabled(true);
     }

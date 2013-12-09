@@ -6,6 +6,7 @@ MenuWidget::MenuWidget(QWidget *parent) :
     ui(new Ui::MenuWidget)
 {
     ui->setupUi(this);
+    ui->periodicTrButton->setDisabled(true);
     connect(ui->balanceButton, SIGNAL(clicked()), this, SLOT(on_balanceButton_clicked()) );
     connect(ui->withdrawButton, SIGNAL(clicked()), this, SLOT(on_withdrawButton_clicked()) );
     connect(ui->periodicTrButton, SIGNAL(clicked()), this, SLOT(on_periodicTrButton_clicked()) );
